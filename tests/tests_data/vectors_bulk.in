@@ -1,0 +1,15 @@
+#LCC input file.
+ LCC{  
+   JobName=                 AgBulk        #Or any other name
+   ClusterType=             Bulk           
+   TypeOfLattice=           Triclinic     
+   LatticePoints=           8             #Number of total lattice points in each direction
+   AtomType=                Ag
+   PrimitiveFormat=         Vectors       #Will use primitive vectors
+   LatticeVectors[
+          2.885 2.885 0.000
+          0.000 4.080 0.000
+          0.000 2.885 2.885
+          ]
+}
+

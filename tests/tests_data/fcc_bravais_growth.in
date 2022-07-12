@@ -1,0 +1,23 @@
+#LCC input file.
+ LCC{
+   JobName=                 AgBulk        #Or any other name
+
+   ClusterType=             BravaisGrowth
+   NumberOfIterations=      3
+   RTol=                    0.01
+   MaxCoordination=         1
+   RCut=                    3.5
+
+   SeedFile= './tests_data/seed.pdb'
+
+   TypeOfLattice=           FCC
+   LatticePointsX1=        -8             #Number of point in the direction of the first Lattice Vector
+   LatticePointsX2=         8                
+   LatticePointsY1=        -8
+   LatticePointsY2=         8
+   LatticePointsZ1=        -8
+   LatticePointsZ2=         8
+   AtomType=                Ag
+   PrimitiveFormat=         Angles        #Will use angles and edges
+   LatticeConstanta=        4.08
+}

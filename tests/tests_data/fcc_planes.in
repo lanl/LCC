@@ -1,0 +1,23 @@
+#LCC input file.
+ LCC{
+   JobName=                 AgPlanes        #Or any other name
+   Verbose=                 3
+
+   TypeOfLattice=           FCC
+   LatticePoints=           50             #Number of point in each direction
+   LatticeConstanta=        4.08
+   AtomType=                Ag
+   
+   ClusterType=             Planes
+
+   InterPlanarDistances= T
+   NumberOfPlanes=   6
+   Planes[
+    1 0 0 4.1
+    -1 0 0 4.1
+    0 1 0 4.1
+    0 -1 0 4.1
+    0 0 -1 4.1
+    0 0 1 4.1
+]
+}

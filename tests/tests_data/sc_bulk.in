@@ -1,0 +1,21 @@
+ 
+ LCC{                                                       
+                                                              
+   JobName=                 SCSlab
+   ClusterType=             Bulk                
+                                                               
+   TypeOfLattice=           SC
+ 
+   LatticePointsX1=        -1                                  
+   LatticePointsX2=         1                                     
+   LatticePointsY1=        -1                                    
+   LatticePointsY2=         1                                    
+   LatticePointsZ1=        -1                                    
+   LatticePointsZ2=         1                                    
+ 
+   PrimitiveFormat=         Angles                    
+   AtomType=                Ag                                  
+                                                                 
+   LatticeConstanta=        4.09
+
+ }                  
