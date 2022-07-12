@@ -32,10 +32,7 @@ endif()
 
 message(STATUS "Project sources = " ${PROJECT_SOURCE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/)
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${CMAKE_BINARY_DIR}/src)
 include_directories(${CMAKE_BINARY_DIR}/)
-include_directories(${PROJECT_SOURCE_DIR}/tests/src)
 include_directories(${BML_INCLUDEDIR})
 include_directories(${PROGRESS_INCLUDEDIR})
 
