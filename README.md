@@ -150,11 +150,22 @@ depending on the architecture the libraries are installed in `/lib64`
 instead of `/lib`. After the afforemention changes are done to the
 `Makefile` file proceed compiling with the “make” command.
 
-# Authors:
+# Authors
 
 Christian Negre, email: cnegre@lanl.gov
 
 [^1]: In order to have access to the repository you should have a github
     account and make sure to add your public ssh key is added in the
     configuration windows of github account.
-~                                                                                                             
+
+# Contributing                                                                                                            
+
+Formally request to be added as a collaborator to the project by sending an email to cnegre@lanl.gov. 
+After being added to the project do the followig:
+
+  - Create a new branch with a proper name that can identify the new feature
+  - Add your contributions to the new branch with proper commit messages
+  - Push the new branch to the repository
+  - Go to repository on the github website and click on "create pull request"
+
+
