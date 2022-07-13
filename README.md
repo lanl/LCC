@@ -159,6 +159,7 @@ instead of `/lib`. After the afforemention changes are done to the
 
 Christian Negre, email: cnegre@lanl.gov
 
+Andrew Alvarado, email: aalvarado@lanl.gov
 
 
 [^1]: In order to have access to the repository you should have a github
