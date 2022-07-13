@@ -93,8 +93,10 @@ them.
 Scripts for quick installations can be found in the main folder.
 In principle one should be able to install everything by typing:
 
-        $ ./clone_all_modules
-        $ ./build_all
+        $ ./clone_libs.sh
+        $ ./build_bml.sh
+        $ ./build_progress.sh
+        $ ./build.sh
 
 Which will also build LCC with its binary file in `./src/lcc_main`.
 
