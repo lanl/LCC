@@ -171,9 +171,11 @@ Andrew Alvarado, email: aalvarado@lanl.gov
 Formally request to be added as a collaborator to the project by sending an email to cnegre@lanl.gov. 
 After being added to the project do the followig:
 
-  - Create a new branch with a proper name that can identify the new feature
-  - Add your contributions to the new branch with proper commit messages
-  - Push the new branch to the repository
+  - Create a new branch with a proper name that can identify the new feature (git checkout -b "my_new_branch"
+  - Make the changes or add your contributions to the new branch (git add newFile.F90 modifiedFile.F90)
+  - Make sure the tests are passing (cd tests ; ./run_test.sh)
+  - Commit the changes with proper commit messages (git commit -m "Adding a my new contribution")
+  - Push the new branch to the repository (git push)
   - Go to repository on the github website and click on "create pull request"
 
 
