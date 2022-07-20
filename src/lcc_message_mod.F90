@@ -95,7 +95,6 @@ contains
 
   end subroutine lcc_print_intVal
 
-
   !> Print real magnitude.
   !! \param name Name of the magnitude.
   !! \param value Value to print.
