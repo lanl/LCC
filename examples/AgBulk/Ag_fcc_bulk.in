@@ -1,0 +1,24 @@
+ 
+ #Will create a slab of Ag FCC with 100, 010, and 001
+ #orientations
+
+ LCC{                                                       
+                                                              
+   JobName=                 AgBulk
+   ClusterType=             Bulk                
+                                                               
+   TypeOfLattice=           FCC
+ 
+   LatticePointsX1=        -1                                  
+   LatticePointsX2=         1                                     
+   LatticePointsY1=        -1                                    
+   LatticePointsY2=         1                                    
+   LatticePointsZ1=        -1                                    
+   LatticePointsZ2=         1                                    
+ 
+   PrimitiveFormat=         Angles                    
+   AtomType=                Ag                                  
+                                                                 
+   LatticeConstanta=        4.09
+
+ }                  
