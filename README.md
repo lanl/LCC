@@ -178,4 +178,7 @@ After being added to the project do the followig:
   - Push the new branch to the repository (git push)
   - Go to repository on the github website and click on "create pull request"
 
+SUGGESTION: Please, avoid commiting a large number of changes since it is difficult to review. Instead, 
+add the changes gradually.
+
 
