@@ -1,0 +1,50 @@
+#Clustergen input for graphene.
+ 
+ LCC{                                                       
+                                                              
+   JobName=                 Clusters                          
+   ClusterType=             Planes            
+ 
+   LatticeBaseFile=        "latticebase.xyz"  
+                                                               
+   TypeOfLattice=           Triclinic    
+   LatticePoints=           0             
+ 
+   LatticePointsX1=        -20             #Initial lattice  point in X direction                      
+   LatticePointsX2=         20             #Final lattice point in X direction                         
+   LatticePointsY1=        -20                                    
+   LatticePointsY2=         20                                    
+   LatticePointsZ1=        -0                                    
+   LatticePointsZ2=         0                                    
+ 
+   PrimitiveFormat=         Angles        #Or Vectors            
+   AtomType=                X            #If the lattice basis is not provided                       
+   UseLatticeBase=          T             #Add a the basis to the lattice points                      
+   BaseFormat=              xyz           #Or abc                
+   CutAfterAddingBase=      F                                    
+
+   #Lattice parameters https://doi.org/10.1016/B978-0-12-812541-0.00003-3
+   LatticeConstanta=        2.45951277476382
+   LatticeConstantb=        2.45951277476382
+   LatticeConstantc=        20
+   LatticeAngleAlpha=       90
+   LatticeAngleBeta=        90
+   LatticeAngleGamma=       120
+
+   Reorient= T
+   CenterAtBox= T
+
+   #If ClusterType is set to Planes:                             
+   PlanesType= Miller
+   NumberOfPlanes= 6
+   Planes[
+      2.0   -1.0   0.0  4.5   #x, y, and z plane direction; distance to origin  
+      -2.0   1.0   0.0  5.5
+      0.0  -1.0   0.0  4.5
+      -0.0   1.0   0.0  5.5
+      0.0   0.0  -1.0  1.0
+      0.0   0.0   1.0  1.0
+   ]
+
+ 
+ }                  
