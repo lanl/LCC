@@ -83,7 +83,7 @@ follower will work and install the programs in the home directory
 
 We will need to clone the repository as follows:
 
-          $ cd; git@github.com:cnegre/ClusterGen.git
+          $ cd; git@github.com:cnegre/LCC.git
 
 # Compiling PROGRESS and BML libraries
 
