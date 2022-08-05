@@ -133,7 +133,7 @@ After BML is installed, return to you home folder and “clone” the
 PROGRESS repository. To do this type:
 
         $ cd
-        $ git clone git@github.com:lanl/progress.git
+        $ git clone git@github.com:lanl/qmd-progress.git
 
 Once the folder is cloned, cd into that folder and use the
 `example_build.sh` file to configure the installation by following the
