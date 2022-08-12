@@ -14,7 +14,7 @@ LINKFLAGS 		= -llapack -lblas -fopenmp
 MAKELIB       = ON
 AR            = /usr/bin/ar cq
 RANLIB        = /usr/bin/ranlib
-
+MPI           = OFF
 
 # Links to PRGRESS and BML libraries:
 
@@ -29,10 +29,13 @@ LIBS 					+= -llapack -lblas
 INCLUDES  	 	+= -I$(BML_PATH)/../include -I$(PROGRESS_PATH)/../include
 F90FLAGS 			+= -I$(BML_PATH)/../include -I$(PROGRESS_PATH)/../include
 
+# Process preproc flags 
+PPFLAGS = -DMPI$(MPI)
+
 # Roules for creating objects:
 
 %.o:%.F90
-	$(F90) $(F90FLAGS) -c $<
+	$(F90) $(F90FLAGS) $(PPFLAGS) -c $<
 
 # Program executable name:
 
