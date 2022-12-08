@@ -6,6 +6,7 @@ module lcc_lattice_mod
   use lcc_constants_mod
   use prg_system_mod
   use prg_extras_mod
+  use prg_syrotation_mod
   use lcc_structs_mod
   use lcc_allocation_mod
   use lcc_message_mod
@@ -60,7 +61,7 @@ contains
       call lcc_reallocate_realMat(ltt%bulk,3,sy%nats)
       ltt%bulk = sy%coordinate
     endif
-    
+
     allocate(auxArr(3))
     auxArr = ltt%lattice_vectors(1,:)
     call lcc_print_realVect("Lattice vector a1",auxArr," [Ang]",bld%verbose)
@@ -86,7 +87,7 @@ contains
     type(lattice_type), intent(inout) :: ltt
     type(system_type) :: sybase
     integer :: i,j,a,b,ai
-    real(dp) :: massTot,volk,volr
+    real(dp) :: massTot,volk,volr,newVol,scaleVect
     real(dp) :: orig(3), myTrs(3)
     logical, intent(in) :: check
     integer, intent(in) :: verbose
@@ -164,7 +165,7 @@ contains
           ltt%r_base(2,ai) =  ltt%bssym(2,i)*ltt%r_base(2,ai) + ltt%bsopload(i)*ltt%bstr(2,i)
           ltt%r_base(3,ai) =  ltt%bssym(3,i)*ltt%r_base(3,ai) + ltt%bsopload(i)*ltt%bstr(3,i)
 
-          if(ltt%getOptTrs)then 
+          if(ltt%getOptTrs)then
             if(i > 0 .and. j == 1)then
               call lcc_minimize_from(ltt%r_base(:,:),i,ai,ltt%sybase%nats,myTrs,verbose)
             endif
@@ -187,6 +188,13 @@ contains
     if(check)then
       call lcc_print_message("Checking lattice structure...",bld%verbose)
       call lcc_check_basis(ltt%base_format,ltt%r_base,ltt%lattice_vectors,bld%verbose)
+    endif
+
+    if(ltt%setdensity > 0)then
+      call lcc_print_message("Will scale lattive vetors to match input density ...",verbose)
+      newVol = 1.0_dp/(6.022_dp*ltt%setdensity/(10.0_dp*massTot))
+      scaleVect = (newVol/ltt%volr)**(1.0_dp/3.0_dp)
+      ltt%lattice_vectors = scaleVect*ltt%lattice_vectors
     endif
 
   end subroutine lcc_read_base
@@ -247,17 +255,43 @@ contains
   !! \param ltt lattice_type See lcc_structs_mod
   !! \param sy system_type See progress library
   !!
-  subroutine lcc_add_base_to_cluster(ltt,sy)
+  subroutine lcc_add_base_to_cluster(ltt,sy,verbose)
     integer                ::  cont, i, j
+    integer, intent(in)    ::  verbose
     integer                ::  natsCluster, natsBase
     integer, allocatable :: resindex_in(:)
     real(dp)               ::  x_component, y_component
     real(dp)               ::  z_component
+    real(dp), allocatable :: coords_saved(:,:)
     real(dp), allocatable  ::  origin(:), r_cluster_in(:,:)
+    real(dp) :: ran
     character(2), allocatable :: atom_in(:)
     character(3), allocatable :: resname_in(:)
-    type(lattice_type), intent(in) :: ltt
+    type(lattice_type)  :: ltt
     type(system_type), intent(inout) :: sy
+    type(rotation_type)               ::  rot
+    integer, parameter :: seed=1234
+    integer, allocatable :: seedin(:)
+    integer :: ssize
+    logical :: rotation
+
+    call lcc_print_message("Adding basis to cluster ...",verbose) 
+    
+    if(ltt%randrotations)then
+      call lcc_print_message("Will apply random rotations to basis ...",verbose) 
+      call random_seed()
+      call random_seed(size=ssize)
+      allocate(seedin(ssize))
+      seedin = seed
+      call random_seed(PUT=seedin)
+      allocate(coords_saved(3,ltt%nbase))
+      coords_saved = ltt%r_base
+      rot%patom1 = ltt%nbase
+      rot%patom2 = 0
+      rot%catom = 1
+      rot%catom2 = 0
+      rot%rotate_atoms(1) = 1; rot%rotate_atoms(2) = ltt%nbase
+    endif
 
     natsBase = ltt%nbase
     natsCluster = ltt%nbase*sy%nats
@@ -265,10 +299,39 @@ contains
     allocate(r_cluster_in(3,natsCluster))
     allocate(resindex_in(natsCluster))
     allocate(atom_in(natsCluster))
-   
+
     if(ltt%base_format.eq.'abc')then
       cont = 0
       do i=1,sy%nats
+
+        !Here we will add the posibility of a rotation
+        if(ltt%randrotations)then
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(1)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(2)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(3)= ran
+          !
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(1)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(2)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(3)= ran
+
+          rot%vQ = 0.0_dp
+
+          ltt%r_base = coords_saved
+          call prg_rotate(rot,ltt%r_base,0)
+        endif
+
         do j=1,natsBase
           cont = cont + 1
           r_cluster_in(1,cont) = sy%coordinate(1,i) + ltt%lattice_vectors(1,1)*ltt%r_base(1,j) + &
@@ -291,6 +354,34 @@ contains
     elseif(ltt%base_format.eq.'xyz')then
       cont = 0
       do i=1,sy%nats
+
+        if(ltt%randrotations)then
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(1)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(2)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v1(3)= ran
+          !
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(1)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(2)= ran
+          call random_number(ran)
+          ran = 2.0_dp*ran - 1.0_dp
+          rot%v2(3)= ran
+
+          rot%vQ = 0.0_dp
+
+          ltt%r_base = coords_saved
+          call prg_rotate(rot,ltt%r_base,10)
+        endif
+
         do j=1,natsBase
           cont = cont + 1
           r_cluster_in(1,cont) = sy%coordinate(1,i) + ltt%r_base(1,j)
@@ -544,7 +635,7 @@ contains
 
   end subroutine lcc_add_randomness
 
-  !> To get the best translation that minimizes the 
+  !> To get the best translation that minimizes the
   !! distance to any previous fragment.
   !! \param xVar Coordinates of the full basis (including symmetry operations).
   !! \param i Fragmet being added at the "i" operation.
@@ -585,7 +676,7 @@ contains
       enddo
     enddo
     trs = myTrs
-    if(verbose >= 1)then 
+    if(verbose >= 1)then
       call lcc_print_intVal("Optimal translations for operation",i,"",verbose)
       write(*,*)i,trs
     endif

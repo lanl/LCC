@@ -27,6 +27,11 @@ program lcc_main
 
   call getarg(1, inputfile)
 
+#ifdef MPION
+  write(*,*)"ERROR: MPI option not yet implemented ..."
+  stop
+#endif
+
   !If the argument passed is empty, print ussage
   !and build a sample imput file.
   if(inputfile == "")then
@@ -57,7 +62,7 @@ program lcc_main
   !If the shape has to be cut from a "dressed lattice"
   if(bld%use_lattice_base.eq.'T'.and. bld%cut_with_base.eq.'T') then
     mlsI = mls()
-    call lcc_add_base_to_cluster(ltt,sy)
+    call lcc_add_base_to_cluster(ltt,sy,bld%verbose)
     call lcc_print_realVal("Time for add_base_to_cluster",mls() - mlsI,"ms",bld%verbose)
   endif
 
@@ -69,6 +74,11 @@ program lcc_main
     call lcc_bravais_growth(bld%niter,bld%rtol,bld%r_cut,bld%MaxCoordination,&
          &bld%seed_file,sy%coordinate)
     sy%nats = size(sy%coordinate,dim=2)
+
+  case ('HamiltonianGrowth')
+    call lcc_hamiltonian_growth(bld%niter,ltt%lattice_vectors,sy%coordinate)
+    sy%nats = size(sy%coordinate,dim=2)
+
   case ('Spheroid')
     call lcc_spheroid(bld%a_axis,bld%b_axis,bld%c_axis,sy%coordinate)
     sy%nats = size(sy%coordinate,dim=2)
@@ -106,7 +116,7 @@ program lcc_main
   !If the shape has to be cut from the lattice but the basis has to be added a posteriori
   if(bld%use_lattice_base.eq.'T'.and. bld%cut_with_base.eq.'F') then
     mlsI = mls()
-    call lcc_add_base_to_cluster(ltt,sy)
+    call lcc_add_base_to_cluster(ltt,sy,bld%verbose)
     call lcc_print_realVal("Time for add_base_to_cluster",mls() - mlsI,"ms",bld%verbose)
   endif
   
