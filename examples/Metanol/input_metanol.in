@@ -1,0 +1,46 @@
+#Clustergen input file
+
+LCC{
+
+  ClusterType=		      Bulk
+  Verbose= 10
+  ClusterNumber=		    0
+  
+  #If ClusterType is set to IrregularOctahedron
+  Truncation=		        0.0
+
+
+  LatticeBaseFile= "metanol.xyz"
+  
+
+  ReadLatticeFromFile= F
+
+  TypeOfLattice= 	      Triclinic 
+  LatticePoints= 		    0	
+  LatticePointsX1=	    -1	
+  LatticePointsX2=		  1
+  LatticePointsY1=	    -1
+  LatticePointsY2=	    1
+  LatticePointsZ1=	  	-1	
+  LatticePointsZ2=	    1
+  PrimitiveFormat=      Angles      
+  AtomType= 		        X 	
+  UseLatticeBase= 	  	T
+  BaseFormat=		        xyz      	
+  CutAfterAddingBase= 	F
+  RandomSeed= 100
+  RCoeff= 0.0
+  RandomRotations= T
+  SetDensity= 0.792
+  
+  LatticeConstanta=	    4.0 
+  LatticeConstantb=	    4.0
+  LatticeConstantc=	    4.0
+
+  LatticeAngleAlpha=     90.0
+  LatticeAngleBeta=		   90.0
+  LatticeAngleGamma=     90.0
+
+}
+
+

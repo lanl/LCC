@@ -26,8 +26,8 @@ contains
   !! - Define a new variable and pass the value through valvector_re(num)
   !! where num is the position of the new keyword in the vector.
   !! \param filename File name for the input.
-  !! \param bld Build type. 
-  !! \param ltt Lattice type. 
+  !! \param bld Build type.
+  !! \param ltt Lattice type.
   !!
   subroutine lcc_parse(filename,bld,ltt)
 
@@ -35,7 +35,7 @@ contains
     character(len=*), intent(in) :: filename
     type(build_type), intent(inout) :: bld
     type(lattice_type), intent(inout) :: ltt
-    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 13, nkey_log = 11
+    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 14, nkey_log = 12
     integer :: i
     character(20) :: dummyc
     real(dp) :: angle_alpha_r, angle_beta_r, angle_gamma_r
@@ -69,19 +69,23 @@ contains
     character(len=50), parameter :: keyvector_re(nkey_re) = [character(len=50) :: &
          'Truncation=', 'LatticeConstanta=', 'LatticeConstantb=', 'LatticeConstantc='&
          &, 'LatticeAngleAlpha=', 'LatticeAngleBeta=', 'LatticeAngleGamma='&
-         &, 'RCut=', 'AAxis=', 'BAxis=', 'CAxis=','RCoeff=','RTol=' ]
+         &, 'RCut=', 'AAxis=', 'BAxis=', 'CAxis=','RCoeff=','RTol='&
+         &, 'SetDensity=']
     real(dp) :: valvector_re(nkey_re) = (/&
          1.0d40, 4.08_dp, 4.08_dp, 4.08_dp&
          &, 90.0_dp, 90.0_dp, 90.0_dp&
-         &, 20.0_dp, 1.0_dp, 1.0_dp, 1.0_dp,0.0_dp,0.01_dp/)
+         &, 20.0_dp, 1.0_dp, 1.0_dp, 1.0_dp,0.0_dp,0.01_dp &
+         &, 0.0_dp/)
 
     character(len=50), parameter :: keyvector_log(nkey_log) = [character(len=100) :: &
          'SymmetryOperations=','CenterAtBox=','Reorient=','WriteCml=',&
          &'CheckLattice=','CheckPeriodicity=','OptimalTranslations=',&
-         &'WriteLmp=','InterPlanarDistances=','RandomCoordinates=','RandomLattice=']
+         &'WriteLmp=','InterPlanarDistances=','RandomCoordinates=','RandomLattice=',&
+         &'RandomRotations=']
     logical :: valvector_log(nkey_log) = (/&
          .false.,.false.,.false.,.false.,&
-         &.false.,.false.,.false.,.false.,.true.,.false.,.false./)
+         &.false.,.false.,.false.,.false.,.true.,.false.,.false.,&
+         &.false./)
 
     !Start and stop characters
     character(len=50), parameter :: startstop(2) = [character(len=50) :: &
@@ -145,6 +149,7 @@ contains
     ltt%angle_alpha = valvector_re(5)
     ltt%angle_beta = valvector_re(6)
     ltt%angle_gamma = valvector_re(7)
+    ltt%setdensity = valvector_re(14)
     bld%r_cut = valvector_re(8)
     bld%a_axis = valvector_re(9)
     bld%b_axis = valvector_re(10)
@@ -164,6 +169,7 @@ contains
     bld%interPlanarDistances = valvector_log(9)
     bld%randomCoordinates = valvector_log(10)
     ltt%randomLattice = valvector_log(11)
+    ltt%randRotations = valvector_log(12)
 
     if(bld%cl_type == 'Bulk') bld%checkperiod = .false.
 
