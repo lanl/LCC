@@ -65,7 +65,7 @@ progress_appendix(lcc_main lcc_main.F90
                             )
 
 SET(DESTINATION ${PROJECT_BINARY_DIR})
-install(FILES ${CMAKE_BINARY_DIR}/progress.pc
+configure_file(lcc.pc.in lcc.pc)
+install(FILES ${CMAKE_BINARY_DIR}/lcc.pc
   DESTINATION ${PROJECT_BINARY_DIR})
-
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
