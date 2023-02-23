@@ -22,6 +22,7 @@ program lcc_main
   type(build_type) :: bld
   type(lattice_type) :: ltt
   type(system_type) :: sy
+  type(mc_type) :: mc
   real(dp), allocatable :: r(:,:),tmp_vectors(:,:)
   type(rotation_type) :: rot
 
@@ -76,7 +77,8 @@ program lcc_main
     sy%nats = size(sy%coordinate,dim=2)
 
   case ('HamiltonianGrowth')
-    call lcc_hamiltonian_growth(bld%niter,ltt%lattice_vectors,sy%coordinate)
+    call lcc_parse_mc(inputfile,mc)
+    call lcc_hamiltonian_growth(mc,ltt%lattice_vectors,bld%width,sy%coordinate)
     sy%nats = size(sy%coordinate,dim=2)
 
   case ('Spheroid')

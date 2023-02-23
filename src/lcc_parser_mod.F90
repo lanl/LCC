@@ -14,10 +14,11 @@ module lcc_parser_mod
   private
 
   public :: lcc_parse, lcc_make_sample_input, lcc_write_coords
+  public :: lcc_parse_mc
 
 contains
 
-  !> Clustergen parser.
+  !> LCC parser.
   !! \brief This module is used to parse all the input variables for this program.
   !! Adding a new input keyword to the parser:
   !! - If the variable is real, we have to increase nkey_re.
@@ -516,5 +517,86 @@ contains
     endif
 
   end subroutine lcc_write_coords
+
+  !> Monte Carlo parser.
+  !! \brief This module is used to parse all the MC input variables.
+  !! Adding a new input keyword to the parser:
+  !! - If the variable is real, we have to increase nkey_re.
+  !! - Add the keyword (character type) in the keyvector_re vector.
+  !! - Add a default value (real type) in the valvector_re.
+  !! - Define a new variable and pass the value through valvector_re(num)
+  !! where num is the position of the new keyword in the vector.
+  !! \param filename File name for the input.
+  !! \param mc Monte Carlo type.
+  !!
+  subroutine lcc_parse_mc(filename,mc)
+
+    implicit none
+    character(len=*), intent(in) :: filename
+    type(mc_type), intent(inout) :: mc
+    integer, parameter :: nkey_char = 2, nkey_int = 4, nkey_re = 14, nkey_log = 2
+    integer :: i
+    character(20) :: dummyc
+
+    !Library of keywords with the respective defaults.
+    character(len=50), parameter :: keyvector_char(nkey_char) = [character(len=100) :: &
+         'JobName=', 'RunType=']
+    character(len=100) :: valvector_char(nkey_char) = [character(len=100) :: &
+         'MyJob', 'Fast']
+
+    character(len=50), parameter :: keyvector_int(nkey_int) = [character(len=50) :: &
+         'NumberOfCycles=', 'NumberOfPrograms=','NumberOfInitialCycles=','Width=']
+    integer :: valvector_int(nkey_int) = (/ &
+         100, 10, 10, 40 /)
+
+    character(len=50), parameter :: keyvector_re(nkey_re) = [character(len=50) :: &
+         'Hx=','Hy=','Hz=','Hxy=','Hx-y=','Hxz=' &
+         &,'Hx-z=','Hyz=','Hy-z=','Hxyz=','H-xyz=','Hx-yz=','Hxy-z=' &
+         &,'H0=']
+    real(dp) :: valvector_re(nkey_re) = (/&
+         0.0_dp, 0.0_dp, 0.0_dp, 0.0_dp, 0.0_dp, & 
+         & 0.0_dp, 0.0_dp, 0.0_dp, 0.0_dp, 0.0_dp, 0.0_dp, &
+         & 0.0_dp, 0.0_dp, 0.0_dp /)
+
+    character(len=50), parameter :: keyvector_log(nkey_log) = [character(len=100) :: &
+         &'Verbose=','Stop=']
+    logical :: valvector_log(nkey_log) = (/&
+         .false.,.false./)
+
+    !Start and stop characters
+    character(len=50), parameter :: startstop(2) = [character(len=50) :: &
+         'MC{', '}']
+
+    call prg_parsing_kernel(keyvector_char,valvector_char&
+         ,keyvector_int,valvector_int,keyvector_re,valvector_re,&
+         keyvector_log,valvector_log,trim(filename),startstop)
+
+    !Characters
+    mc%job_name = valvector_char(1)
+    mc%run_type = valvector_char(2)
+
+    !Integers
+    mc%num_cycles = valvector_int(1)
+    mc%num_prog = valvector_int(2)
+    mc%num_init_cycles = valvector_int(3)
+    mc%width = valvector_int(4)
+
+    !Real
+    mc%hx = valvector_re(1)
+    mc%hy = valvector_re(2)
+    mc%hz = valvector_re(3)
+    mc%hxy = valvector_re(4)
+    mc%hxmy = valvector_re(5)
+    mc%hxz = valvector_re(6)
+    mc%hxmz = valvector_re(7)
+    mc%hyz = valvector_re(8)
+    mc%hymz = valvector_re(9)
+    mc%hxyz = valvector_re(10)
+    mc%hmxyz = valvector_re(11)
+    mc%hxmyz = valvector_re(12)
+    mc%hxymz = valvector_re(13)
+    mc%h0 = valvector_re(14)
+
+  end subroutine lcc_parse_mc 
 
 end module lcc_parser_mod

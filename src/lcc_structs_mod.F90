@@ -139,6 +139,9 @@ module lcc_structs_mod
     !> To add randomness to coordinates
     logical :: randomCoordinates
 
+    !> Width of a "chunk of lattice"
+    integer :: width 
+
   end type build_type
 
 
@@ -227,6 +230,35 @@ module lcc_structs_mod
     real(dp) :: setdensity
 
   end type lattice_type  
+
+  
+  !> Monte Carlo build type
+  type, public :: mc_type  !< The type of lattice read from input.
+
+    !> Job name
+    character(len=20) :: job_name
+
+    !> Job name
+    character(len=20) :: run_type
+
+    !> Number of cycles 
+    integer :: num_cycles 
+
+    !> Number of programs 
+    integer :: num_prog 
+
+    !> Number of initial cycles 
+    integer :: num_init_cycles 
+
+    !> Width of the crystal chunk
+    integer :: width
+
+    !> MC interation energies 
+    !! hxmz means an interation with the neighbor in the a1, -a3 direction.
+    integer :: hx, hy, hz, hxy, hxmy, hxz, hxmz, hyz, hymz, hxyz, hmxyz
+    integer :: hxmyz, hxymz, h0 
+
+  end type  mc_type
 
 end module lcc_structs_mod
 

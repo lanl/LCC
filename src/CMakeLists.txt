@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(appendix C CXX Fortran)
 
-set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
+set(dir ${CMAKE_CURRENT_SOURCE_DIR}/src/build)
 set(CMAKE_BUILD_DIRECTORY ${dir})
 set(CMAKE_CURRENT_BINARY_DIR ${dir})
 
