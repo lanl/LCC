@@ -1,15 +1,11 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(lcc VERSION 1.0.0 LANGUAGES Fortran)
 
-include(GNUInstallDirs)
+#include(GNUInstallDirs)
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
-message(STATUS "Source dir is: ${CMAKE_CURRENT_SOURCE_DIR}")
-message(STATUS "bin dir is: ${dir}")
 set(CMAKE_BUILD_DIRECTORY ${dir})
 set(CMAKE_CURRENT_BINARY_DIR ${dir})
-message(STATUS "bin dir is: ${CMAKE_BUILD_DIRECTORY}")
-message(STATUS "bin dir is: ${CMAKE_CURRENT_BINARY_DIR}")
 
 include(FindPkgConfig)
 
@@ -71,11 +67,10 @@ progress_appendix(lcc_main lcc_main.F90
                             )
 
 
-SET(DESTINATION ${PROJECT_BINARY_DIR})
+#SET(DESTINATION ${PROJECT_BINARY_DIR})
 configure_file(lcc.pc.in lcc.pc)
 install(TARGETS lcc_main DESTINATION ${CMAKE_INSTALL_BINDIR})
-install(FILES ${CMAKE_BINARY_DIR}/lcc.pc
-  DESTINATION ${PROJECT_BINARY_DIR})
+#install(FILES ${CMAKE_BINARY_DIR}/lcc.pc
+#  DESTINATION ${PROJECT_BINARY_DIR})
 
-message(STATUS "BIN dir is: ${PROJECT_BINARY_DIR}")
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+#SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
