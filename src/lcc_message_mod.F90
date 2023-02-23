@@ -20,7 +20,7 @@ contains
     write(*,*)""
     write(*,*)"Usage:"
     write(*,*)""
-    write(*,*)"  $ clgen <inputfile>"
+    write(*,*)"  $ lcc <inputfile>"
     write(*,*)""
     write(*,*)"<inputfile>: File containing the input parameters  "
     write(*,*)""
