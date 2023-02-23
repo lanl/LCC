@@ -5,7 +5,7 @@ project(lcc VERSION 1.0.0 LANGUAGES Fortran)
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR}/build/)
 set(CMAKE_BUILD_DIRECTORY ${dir})
-set(CMAKE_INSTALL_BINDIR ${dir})
+#set(CMAKE_INSTALL_BINDIR ${dir})
 
 include(FindPkgConfig)
 
