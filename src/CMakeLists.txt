@@ -62,6 +62,7 @@ progress_appendix(lcc_main lcc_main.F90
                             lcc_message_mod.F90
                             lcc_radial_mod.F90
                             lcc_string_mod.F90
+                            lcc_template_mod.F90
                             )
 
 SET(DESTINATION ${PROJECT_BINARY_DIR})
