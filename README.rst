@@ -126,8 +126,8 @@ In principle one should be able to install everything by typing:
 
 Which will also build LCC with its binary file in `./src/lcc_main`.
 
-Step-by-step install
---------------------
+Step-by-step installation
+-------------------------
 
 Clone the BML library (in your home directory) by doing[^1]:
 
@@ -171,14 +171,23 @@ same steps as for the bml library.
 You can test the installation by typing `$ make tests` in the same way
 as it is done for BML.
 
-LCC
----
-
 Open the `Makefile` file in the `lcc/src` folder make sure the
 path to both bml and progress libs are set correctly. NOTE: Sometimes,
 depending on the architecture the libraries are installed in `/lib64`
-instead of `/lib`. After the afforemention changes are done to the
+instead of `/lib`. After the aforementioned changes are done to the
 `Makefile` file proceed compiling with the “make” command.
+
+Quick example run 
+-----------------
+Assuming the code is installed in the `$HOME` directory, we will run a simple example:
+
+        $ cd /tmp 
+        $ echo "LCC{ ClusterType= Spheroid TypeOfLattice= FCC AAxis= 10.0 BAxis= 10.0 CAxis= 10.0 }"  | tee input.in  ; $HOME/LCC/build/lcc_main input.in
+
+This will generate a spherical structure with an FCC lattice using default parameters.         
+One can quickly get an input file sample by running the code without giving any input file. 
+The available keywords can be listed by running `lcc_main -h` 
+
 
 Contributors
 ------------
