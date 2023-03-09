@@ -5,15 +5,15 @@
   * - Issues
     - Pull Requests
     - CI
-  * - .. image:: https://img.shields.io/github/issues/cnegre/LCC-1.svg
+  * - .. image:: https://img.shields.io/github/issues/cnegre/LCC.svg
         :alt: GitHub issues
-        :target: https://github.com/cnegre/LCC-1/issues
-    - .. image:: https://img.shields.io/github/issues-pr/cnegre/LCC-1.svg
+        :target: https://github.com/cnegre/LCC/issues
+    - .. image:: https://img.shields.io/github/issues-pr/cnegre/LCC.svg
         :alt: GitHub pull requests
-        :target: https://github.com/cnegre/LCC-1/pulls
-    - .. image:: https://github.com/cnegre/LCC-1/actions/workflows/main.yml/badge.svg
+        :target: https://github.com/cnegre/LCC/pulls
+    - .. image:: https://github.com/cnegre/LCC/actions/workflows/main.yml/badge.svg
         :alt: GitHub Actions
-        :target: https://github.com/cnegre/LCC-1/actions
+        :target: https://github.com/cnegre/LCC/actions
 
 
 LCC
