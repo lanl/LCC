@@ -31,6 +31,7 @@ if(DEFINED EXTRA_FCFLAGS)
    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${EXTRA_FCFLAGS}")
 endif()
 
+list(APPEND LINK_LIBRARIES ${EXTRA_LINK_FLAGS})
 
 message(STATUS "Project sources = " ${PROJECT_SOURCE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/)

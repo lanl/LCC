@@ -13,6 +13,6 @@ export INSTALL_DIR=${INSTALL_DIR:="${MY_PATH}/bml/install"}
 export BML_TESTING=${BML_TESTING:=no}
 export CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:=Release}
 
-cd bml; ./build.sh configure; cd build; make -j; make install cd $MY_PATH
+cd bml; ./build.sh configure; cd build; make -j; make install ; cd $MY_PATH
 
 
