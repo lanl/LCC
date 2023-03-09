@@ -140,7 +140,10 @@ module lcc_structs_mod
     logical :: randomCoordinates
 
     !> Width of a "chunk of lattice"
-    integer :: width 
+    integer :: width
+
+    !> Center at a given position
+    real(dp), allocatable :: origin(:) 
 
   end type build_type
 

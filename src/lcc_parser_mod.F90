@@ -36,7 +36,7 @@ contains
     character(len=*), intent(in) :: filename
     type(build_type), intent(inout) :: bld
     type(lattice_type), intent(inout) :: ltt
-    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 14, nkey_log = 12
+    integer, parameter :: nkey_char = 15, nkey_int = 15, nkey_re = 14, nkey_log = 12
     integer :: i
     character(20) :: dummyc
     real(dp) :: angle_alpha_r, angle_beta_r, angle_gamma_r
@@ -47,12 +47,12 @@ contains
          'JobName=', 'ClusterType=', 'TypeOfLattice=', 'PrimitiveFormat='&
          &, 'AtomType=', 'BaseFormat=', 'UseLatticeBase=', 'CutAfterAddingBase='&
          &, 'PlanesType=', 'LatticeBaseFile=', 'ReadLatticeFromFile=','CoordsOutFile='&
-         &, 'SeedFile=', 'Rdf=' ]
+         &, 'SeedFile=', 'Rdf=', 'Origin[' ]
     character(len=100) :: valvector_char(nkey_char) = [character(len=100) :: &
          'MyJob', 'Bulk', 'Triclinic', 'Angles' &
          &, 'Au', 'abc', 'F', 'F'&
          &,'Miller', 'latticebase.pdb', 'F', 'coords', &
-         &'seed.pdb', ' ']
+         &'seed.pdb', ' ', 'null']
 
     character(len=50), parameter :: keyvector_int(nkey_int) = [character(len=50) :: &
          'ClusterNumber=', 'LatticePoints=', 'LatticePointsX1=' &
@@ -353,7 +353,7 @@ contains
       stop
     endif
 
-    if(trim(ltt%type_of_lattice) == "FCC" .or. trim(ltt%type_of_lattice) == "FCC") then
+    if(trim(ltt%type_of_lattice) == "FCC" .or. trim(ltt%type_of_lattice) == "SC") then
       if(abs(ltt%angle_alpha - 90.0_dp) > 0.000000000001_dp .or. &
            & abs(ltt%angle_beta - 90.0_dp) > 0.000000000001_dp .or. &
            & abs(ltt%angle_gamma - 90.0_dp) > 0.000000000001_dp)then
@@ -368,6 +368,35 @@ contains
     if(bld%cl_type == "Dress" .and. bld%use_lattice_base == "F")then
       STOP "UseLatticeBase must be set to T for ClusterType= Dress"
     end if
+
+
+    if(valvector_char(15) .ne. "null" )then
+      write(*,*)"Reading new origin vector ..."
+      open(1, file=trim(filename))
+      do i = 1,10000
+        read(1,*) dummyc
+        if(adjustl(trim(dummyc)) == "Origin[")then
+          exit
+        endif
+        if(adjustl(trim(dummyc)) == "}")then
+          write(*,*)'ERROR: No origin vector is defined'
+          write(*,*)"Here is an example block you should add to the"
+          write(*,*)"input file"
+          write(*,*)""
+          write(*,*)"Origin["
+          write(*,*)"   1.0 1.0 1.0"
+          write(*,*)"]"
+          stop
+        end if
+      enddo
+      allocate(bld%origin(3))
+        read(1,*)bld%origin(1),bld%origin(2),bld%origin(3)
+      write(*,*)""
+      close(1)
+    else
+      allocate(bld%origin(3))
+      bld%origin = 0.0_dp 
+    endif
 
     call lcc_print_message("############### End of parameters read ################",&
          &bld%verbose)

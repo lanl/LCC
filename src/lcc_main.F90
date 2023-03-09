@@ -23,7 +23,8 @@ program lcc_main
   type(lattice_type) :: ltt
   type(system_type) :: sy
   type(mc_type) :: mc
-  real(dp), allocatable :: r(:,:),tmp_vectors(:,:)
+  real(dp), allocatable :: r(:,:),tmp2Darr(:,:)
+  real(dp), allocatable :: tmp1Darray(:)
   type(rotation_type) :: rot
 
   call getarg(1, inputfile)
@@ -123,7 +124,8 @@ program lcc_main
   endif
   
   if(bld%reorient)then
-    call lcc_center_at_origin(sy%coordinate,bld%verbose)
+    allocate(tmp1Darray(3)); tmp1Darray = 0.0_dp
+    call lcc_center_at_origin(sy%coordinate,tmp1Darray,bld%verbose)
     call lcc_canonical_basis(sy%lattice_vector,sy%coordinate,bld%verbose)
   endif
 
@@ -133,6 +135,10 @@ program lcc_main
 
   if(bld%randomCoordinates)then
     call lcc_add_randomness_to_coordinates(sy%coordinate,bld%seed,bld%rcoeff)
+  endif
+
+  if(norm2(bld%origin) > 0.0_dp)then
+    call lcc_center_at_origin(sy%coordinate,bld%origin,bld%verbose)
   endif
 
   !Write system
