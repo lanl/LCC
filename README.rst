@@ -104,7 +104,9 @@ Quick installation using `spack`
 -------------------------------
 
         $ cd ~
+
         $ git clone git@github.com:spack/spack.git
+
         $ . spack/share/spack/setup-env.sh
 
   Get info on the package
@@ -121,10 +123,15 @@ Load the lcc module
 
 Try lcc
         $ cd tmp ; lcc_main
+
         $ spack install ovito
+
         $ spack load ovito
+
         $ cd /tmp
+
         $ echo "LCC{ ClusterType= Spheroid TypeOfLattice= FCC AAxis= 10.0 BAxis= 10.0 CAxis= 10.0 }"  | tee input.in  ; lcc_main input.in
+
         $ ovito coords.xyz
 
 Download and installation
