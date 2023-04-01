@@ -103,35 +103,29 @@ follower will work and install the programs in the home directory
 Quick installation using `spack` 
 -------------------------------
 
-```bash
-  cd ~
-  git clone git@github.com:spack/spack.git
-  . spack/share/spack/setup-env.sh
-```
-Get info on the package
+        $ cd ~
+        $ git clone git@github.com:spack/spack.git
+        $ . spack/share/spack/setup-env.sh
 
-```bash
-  spack info lcc                    
-```
+  Get info on the package
+
+        $ spack info lcc                    
+
 Install the package, this will take a while because it'll install everything from scratch.
-```bash
-  spack install lcc
-```
+
+        $ spack install lcc
 
 Load the lcc module
-```
-  spack load lcc
-```
+
+        $ spack load lcc
 
 Try lcc
-```bahs
-  cd tmp ; lcc_main
-  spack install ovito
-  spack load ovito
-  cd /tmp
-  echo "LCC{ ClusterType= Spheroid TypeOfLattice= FCC AAxis= 10.0 BAxis= 10.0 CAxis= 10.0 }"  | tee input.in  ; lcc_main input.in
-  ovito coords.xyz
-```
+        $ cd tmp ; lcc_main
+        $ spack install ovito
+        $ spack load ovito
+        $ cd /tmp
+        $ echo "LCC{ ClusterType= Spheroid TypeOfLattice= FCC AAxis= 10.0 BAxis= 10.0 CAxis= 10.0 }"  | tee input.in  ; lcc_main input.in
+        $ ovito coords.xyz
 
 Download and installation
 ---------------------------
