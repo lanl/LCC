@@ -36,7 +36,7 @@ contains
     type(build_type), intent(inout) :: bld
     type(lattice_type), intent(inout) :: ltt
     type(compute_type), intent(inout) :: cmp
-    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 13, nkey_log = 12
+    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 14, nkey_log = 13
     integer :: i
     character(20) :: dummyc
     logical :: existVals
@@ -71,21 +71,23 @@ contains
     character(len=50), parameter :: keyvector_re(nkey_re) = [character(len=50) :: &
          'Truncation=', 'LatticeConstanta=', 'LatticeConstantb=', 'LatticeConstantc='&
          &, 'LatticeAngleAlpha=', 'LatticeAngleBeta=', 'LatticeAngleGamma='&
-         &, 'RCut=', 'AAxis=', 'BAxis=', 'CAxis=','RCoeff=','RTol=' ]
+         &, 'RCut=', 'AAxis=', 'BAxis=', 'CAxis=','RCoeff=','RTol=' &
+         &, 'SetDensity=']
     real(dp) :: valvector_re(nkey_re) = (/&
          1.0d40, 4.08_dp, 4.08_dp, 4.08_dp&
          &, 90.0_dp, 90.0_dp, 90.0_dp&
-         &, 20.0_dp, 1.0_dp, 1.0_dp, 1.0_dp,0.0_dp,0.01_dp/)
+         &, 20.0_dp, 1.0_dp, 1.0_dp, 1.0_dp,0.0_dp,0.01_dp&
+         &, 0.0_dp/)
 
     character(len=50), parameter :: keyvector_log(nkey_log) = [character(len=100) :: &
          'SymmetryOperations=','CenterAtBox=','Reorient=','WriteCml=',&
          &'CheckLattice=','CheckPeriodicity=','OptimalTranslations=',&
          &'WriteLmp=','InterPlanarDistances=','RandomCoordinates=','RandomLattice=',&
-         &'ComputeRoughness=']
+         &'ComputeRoughness=','RandomRotations=']
     logical :: valvector_log(nkey_log) = (/&
          .false.,.false.,.false.,.false.,&
          &.false.,.false.,.false.,.false.,.true.,.false.,.false.,&
-         &.false./)
+         &.false.,.false./)
 
     !Start and stop characters
     character(len=50), parameter :: startstop(2) = [character(len=50) :: &
@@ -149,6 +151,8 @@ contains
     ltt%angle_alpha = valvector_re(5)
     ltt%angle_beta = valvector_re(6)
     ltt%angle_gamma = valvector_re(7)
+    ltt%setdensity = valvector_re(14)
+
     bld%r_cut = valvector_re(8)
     bld%a_axis = valvector_re(9)
     bld%b_axis = valvector_re(10)
@@ -169,6 +173,7 @@ contains
     bld%randomCoordinates = valvector_log(10)
     ltt%randomLattice = valvector_log(11)
     cmp%computeRoughness = valvector_log(12)
+    ltt%randrotations = valvector_log(13)
 
     if(bld%cl_type == 'Bulk') bld%checkperiod = .false.
 
