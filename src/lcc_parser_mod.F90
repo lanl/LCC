@@ -29,15 +29,17 @@ contains
   !! \param bld Build type. 
   !! \param ltt Lattice type. 
   !!
-  subroutine lcc_parse(filename,bld,ltt)
+  subroutine lcc_parse(filename,bld,ltt,cmp)
 
     implicit none
     character(len=*), intent(in) :: filename
     type(build_type), intent(inout) :: bld
     type(lattice_type), intent(inout) :: ltt
-    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 13, nkey_log = 11
+    type(compute_type), intent(inout) :: cmp
+    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 13, nkey_log = 12
     integer :: i
     character(20) :: dummyc
+    logical :: existVals
     real(dp) :: angle_alpha_r, angle_beta_r, angle_gamma_r
     real(dp), allocatable :: params(:,:)
 
@@ -78,10 +80,12 @@ contains
     character(len=50), parameter :: keyvector_log(nkey_log) = [character(len=100) :: &
          'SymmetryOperations=','CenterAtBox=','Reorient=','WriteCml=',&
          &'CheckLattice=','CheckPeriodicity=','OptimalTranslations=',&
-         &'WriteLmp=','InterPlanarDistances=','RandomCoordinates=','RandomLattice=']
+         &'WriteLmp=','InterPlanarDistances=','RandomCoordinates=','RandomLattice=',&
+         &'ComputeRoughness=']
     logical :: valvector_log(nkey_log) = (/&
          .false.,.false.,.false.,.false.,&
-         &.false.,.false.,.false.,.false.,.true.,.false.,.false./)
+         &.false.,.false.,.false.,.false.,.true.,.false.,.false.,&
+         &.false./)
 
     !Start and stop characters
     character(len=50), parameter :: startstop(2) = [character(len=50) :: &
@@ -164,6 +168,7 @@ contains
     bld%interPlanarDistances = valvector_log(9)
     bld%randomCoordinates = valvector_log(10)
     ltt%randomLattice = valvector_log(11)
+    cmp%computeRoughness = valvector_log(12)
 
     if(bld%cl_type == 'Bulk') bld%checkperiod = .false.
 
@@ -282,6 +287,35 @@ contains
       write(*,*)""
       close(1)
     end if
+
+    if(cmp%computeRoughness)then
+      write(*,*)"Reading parameters to compute roughness ..."
+      open(1, file=trim(filename))
+      do i = 1,10000
+        read(1,*) dummyc
+        if(adjustl(trim(dummyc)) == "RoughnessParameters[")then
+          read(1,*)cmp%roughnessIsoval,cmp%roughnessRab,&
+          &cmp%roughnessNi, cmp%roughnessNj, cmp%roughnessNk
+          exit
+        endif
+        if(adjustl(trim(dummyc)) == "}")then
+          write(*,*)""
+          write(*,*)'WARNING: No parameters defined for ComputeRoughness'
+          write(*,*)'I will use default values'
+          write(*,*)"Here is an example block you should add to the"
+          write(*,*)"input file"
+          write(*,*)""
+          write(*,*)"RoughnessParameters["
+          write(*,*)"   50.0 1.0 40 80 80"
+          write(*,*)"]"
+          cmp%roughnessIsoval= 50.0; cmp%roughnessRab= 1.0
+          cmp%roughnessNi= 40; cmp%roughnessNj= 80; cmp%roughnessNk= 80
+          exit
+        endif
+      enddo
+      write(*,*)""
+      close(1)
+    endif
 
     !Asserts for the input file.
     if(ltt%type_of_lattice.eq.'Triclinic')then

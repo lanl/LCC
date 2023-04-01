@@ -66,6 +66,7 @@ progress_appendix(lcc_main lcc_main.F90
                             lcc_radial_mod.F90
                             lcc_string_mod.F90
                             lcc_template_mod.F90
+                            lcc_compute_mod.F90
                             )
 
 install(TARGETS lcc_main DESTINATION ${CMAKE_INSTALL_BINDIR})

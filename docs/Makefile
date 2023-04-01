@@ -13,6 +13,7 @@ clean:
 
 doxy:
 	(doxygen ./doxy-src/Doxyfile)	
+	(cp ../README.rst ./README-main.md)
 	(cd $(DIR)/doxy-out/latex ; make)	
 	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_devel.pdf)
 	(doxygen ./doxy-src/Doxyfile_user)	
@@ -20,8 +21,8 @@ doxy:
 	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_user.pdf)
 
 sphinx:
-	(cp ../README.md ./sphinx-src/source/README-main.md)
-	(cp ./README.md ./sphinx-src/source/)
+	(cp ../README.rst ./sphinx-src/source/README-main.md)
+	(cp ./README.rst ./sphinx-src/source/)
 	(cd sphinx-src/source; mkdir _static; sphinx-build -b html . ../../sphinx-out)
 	(cp -r figures sphinx-out/docs/)
 	(rm lcc_user.html; ln -s ./sphinx-out/index.html ./lcc_user.html)

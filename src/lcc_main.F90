@@ -15,6 +15,7 @@ program lcc_main
   use lcc_regular_mod
   use lcc_check_mod
   use lcc_radial_mod
+  use lcc_compute_mod
 
   implicit none
   integer :: mlsI
@@ -24,6 +25,7 @@ program lcc_main
   type(system_type) :: sy
   real(dp), allocatable :: r(:,:),tmp_vectors(:,:)
   type(rotation_type) :: rot
+  type(compute_type) :: cmp
 
   call getarg(1, inputfile)
 
@@ -45,7 +47,7 @@ program lcc_main
 
   !Read the build and lattice types
   mlsI = mls()
-  call lcc_parse(inputfile,bld,ltt)
+  call lcc_parse(inputfile,bld,ltt,cmp)
   call lcc_print_realVal("Time for lcc_parse",mls() - mlsI,"ms",bld%verbose)
 
   !Make lattice from unit cell
@@ -127,6 +129,13 @@ program lcc_main
   call lcc_write_coords(sy,bld,"coords",bld%verbose)
 
   if(bld%rdfPair .ne. " ") call lcc_distance_matrix(sy%symbol,sy%coordinate,sy%lattice_vector,bld%rdfPair,bld%verbose)
+
+  !Extra computations
+  if(cmp%computeRoughness)then 
+    call lcc_compute_roughness(sy%coordinate,sy%lattice_vector,cmp%roughnessIsoval,&
+      &cmp%roughnessRab,cmp%roughnessNi,cmp%roughnessNj,cmp%roughnessNk,bld%verbose)
+  endif
+  
 
   call lcc_print_message("CCL execution finalized!",bld%verbose)
 

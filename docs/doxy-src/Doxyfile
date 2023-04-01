@@ -816,6 +816,7 @@ INPUT_ENCODING         = UTF-8
 # *.f, *.for, *.tcl, *.vhd, *.vhdl, *.ucf and *.qsf.
 
 FILE_PATTERNS          = *.m \
+                         *.rst \
                          *.markdown \
                          *.md \
                          *.F90 

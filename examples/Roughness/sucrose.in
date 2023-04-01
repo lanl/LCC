@@ -1,0 +1,72 @@
+LCC{
+  ClusterType=          Planes
+  ClusterNumber=        2
+  Verbose=  3
+  LatticeBaseFile= "lattice_basis.xyz"
+  WriteCml= F
+  CheckPeriodicity= T
+
+  ReadLatticeFromFile= F
+  TypeOfLattice=        Triclinic
+  LatticePoints=        30
+
+  CheckLattice=         T
+
+  PrimitiveFormat=      Angles
+  AtomType=             At
+  UseLatticeBase=       T
+  BaseFormat=           abc
+  CutAfterAddingBase=   F
+
+  LatticeConstanta=     7.789
+  LatticeConstantb=     8.743
+  LatticeConstantc=     10.883
+
+  LatticeAngleAlpha=     90
+  LatticeAngleBeta=      102.760
+  LatticeAngleGamma=     90
+  RCoeff= 0.0
+
+  CenterAtBox=       T
+  Reorient=          T
+
+  #+X,+Y,+Z
+  #-X,1/2+Y,-Z
+  SymmetryOperations= T
+  NumberOfOperations= 2
+  OptimalTranslations= F 
+  Translations[
+    1  0   1   -1
+    0  1   2   0.5
+  ]
+  Symmetries[
+     1  1  1
+    -1  1 -1
+  ]
+
+   NumberOfPlanes=   6
+
+ComputeRoughness= T
+RoughnessParameters[ 
+50.0 1.0 40 80 80
+]
+
+Planes[
+    1  0   0   2.5
+    -1  0  0   1.5
+    0  1   0   4.5
+    0  -1  0   3.5
+    0  0   1   2.5
+    0  0   -1   1.5
+]
+
+#Planes[
+    1  0   -1   2.5
+    -1  0  1   1.5
+    0 -1   0   4.5
+    0  1  0   1.5
+    1  0   1   4.5
+    -1  0   -1   1.5
+]
+
+}

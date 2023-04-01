@@ -220,7 +220,21 @@ module lcc_structs_mod
     !> To add randomness to each lattice position
     logical :: randomLattice
 
-  end type lattice_type  
+  end type lattice_type 
+
+
+  !> Compute type 
+  type, public :: compute_type 
+
+    !> Compute surface roughness 
+    logical :: computeRoughness
+
+    !> Surface roughness parameters
+    real(dp) :: roughnessIsoval 
+    real(dp) :: roughnessRab 
+    integer :: roughnessNi, roughnessNj, roughnessNk
+
+  end type compute_type
 
 end module lcc_structs_mod
 
