@@ -74,7 +74,7 @@ program lcc_main
     sy%nats = size(sy%coordinate,dim=2)
   case ("Planes")
     if(bld%planes_type == "Miller")then
-      call lcc_plane_cut(bld%planes,bld%ploads,bld%interPlanarDistances,&
+      call lcc_plane_cut(bld%planes,bld%ploads,bld%pgncheck,bld%interPlanarDistances,&
            &ltt%lattice_vectors,sy%lattice_vector,&
            &sy%resindex,sy%coordinate,bld%verbose)
       sy%nats = size(sy%coordinate,dim=2)

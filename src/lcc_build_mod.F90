@@ -7,6 +7,7 @@ module lcc_build_mod
   use lcc_allocation_mod
   use prg_system_mod
   use lcc_aux_mod
+  use lcc_pgcheck_mod
 
   implicit none
 
@@ -119,14 +120,15 @@ contains
   !! \brief A set of panes and distances is provided.
   !! \param planes List of planes to cut the shape with.
   !! \param ploads Distance from the origin to locate the plane.
+  !! \param pgcheck To check for allowed planes
   !! \param interPlanarDistance Use "interplanar distances" as measure for the cut.
   !! \param lattice_vectors Lattice vectors.
   !! \param cluster_lattice_vectors Lattice vectors of the shape.
   !! Note: this only makes sense if the planes make a parellelepiped.
   !! \param r_inout Coordinates in and out.
   !! \param verbose Verbosity level.
-  !!
-  subroutine lcc_plane_cut(planes,ploads,interPlanarDistances,lattice_vectors,&
+  !! 
+  subroutine lcc_plane_cut(planes,ploads, pgcheck, interPlanarDistances,lattice_vectors,&
        &cluster_lattice_vectors,resindex,r_inout,verbose)
     implicit none
     integer :: accept_index, j, l, nats
@@ -149,7 +151,8 @@ contains
     real(dp) :: PP,QP,t,density,area
     integer, intent(in) :: verbose
     logical, intent(in) :: interPlanarDistances
-    logical :: inSurface
+    logical :: inSurface, allowed
+    character (20) :: pgcheck
 
     call lcc_print_message("Cutting by Miller planes ...",verbose)
 
@@ -199,6 +202,7 @@ contains
            &area,"Ang^2 ",verbose)
       call lcc_print_realVal("Reticular density", &
            &1.0_dp/area," points/Ang^2 ",verbose)
+      call lcc_pgcheck_plane(planes(:,j), pgcheck, allowed, verbose)     
 
     enddo
     call lcc_reallocate_realMat(cluster_lattice_vectors,3,3)

@@ -138,7 +138,10 @@ module lcc_structs_mod
  
     !> To add randomness to coordinates
     logical :: randomCoordinates
-
+    
+    !> To check allowed planes
+    character(20) :: pgncheck
+    
   end type build_type
 
 

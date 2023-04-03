@@ -35,7 +35,7 @@ contains
     character(len=*), intent(in) :: filename
     type(build_type), intent(inout) :: bld
     type(lattice_type), intent(inout) :: ltt
-    integer, parameter :: nkey_char = 14, nkey_int = 15, nkey_re = 13, nkey_log = 11
+    integer, parameter :: nkey_char = 15, nkey_int = 15, nkey_re = 13, nkey_log = 11
     integer :: i
     character(20) :: dummyc
     real(dp) :: angle_alpha_r, angle_beta_r, angle_gamma_r
@@ -46,12 +46,12 @@ contains
          'JobName=', 'ClusterType=', 'TypeOfLattice=', 'PrimitiveFormat='&
          &, 'AtomType=', 'BaseFormat=', 'UseLatticeBase=', 'CutAfterAddingBase='&
          &, 'PlanesType=', 'LatticeBaseFile=', 'ReadLatticeFromFile=','CoordsOutFile='&
-         &, 'SeedFile=', 'Rdf=' ]
+         &, 'SeedFile=', 'Rdf=' , 'PointGroupPlaneCheckFor=']
     character(len=100) :: valvector_char(nkey_char) = [character(len=100) :: &
          'MyJob', 'Bulk', 'Triclinic', 'Angles' &
          &, 'Au', 'abc', 'F', 'F'&
          &,'Miller', 'latticebase.pdb', 'F', 'coords', &
-         &'seed.pdb', ' ']
+         &'seed.pdb', ' ', 'XX']
 
     character(len=50), parameter :: keyvector_int(nkey_int) = [character(len=50) :: &
          'ClusterNumber=', 'LatticePoints=', 'LatticePointsX1=' &
@@ -106,6 +106,7 @@ contains
     bld%coordsout_file = valvector_char(12)
     bld%seed_file = valvector_char(13)
     bld%rdfPair= valvector_char(14)
+    bld%pgncheck= valvector_char(15)
 
     !Integers
     bld%cl_number = valvector_int(1)
