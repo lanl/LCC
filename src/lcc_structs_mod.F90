@@ -220,6 +220,13 @@ module lcc_structs_mod
     !> To add randomness to each lattice position
     logical :: randomLattice
 
+    !> To add random orientations to each lattice molecules/basis
+    logical :: randrotations
+
+    !> To set a particular density in [gr/cc]
+    real(dp) :: setdensity
+
+
   end type lattice_type 
 
 

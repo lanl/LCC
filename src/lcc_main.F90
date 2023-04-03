@@ -59,7 +59,7 @@ program lcc_main
   !If the shape has to be cut from a "dressed lattice"
   if(bld%use_lattice_base.eq.'T'.and. bld%cut_with_base.eq.'T') then
     mlsI = mls()
-    call lcc_add_base_to_cluster(ltt,sy)
+    call lcc_add_base_to_cluster(ltt,sy,bld%verbose)
     call lcc_print_realVal("Time for add_base_to_cluster",mls() - mlsI,"ms",bld%verbose)
   endif
 
@@ -108,7 +108,7 @@ program lcc_main
   !If the shape has to be cut from the lattice but the basis has to be added a posteriori
   if(bld%use_lattice_base.eq.'T'.and. bld%cut_with_base.eq.'F') then
     mlsI = mls()
-    call lcc_add_base_to_cluster(ltt,sy)
+    call lcc_add_base_to_cluster(ltt,sy,bld%verbose)
     call lcc_print_realVal("Time for add_base_to_cluster",mls() - mlsI,"ms",bld%verbose)
   endif
   
