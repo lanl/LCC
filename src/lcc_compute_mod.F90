@@ -38,7 +38,7 @@ contains
     integer :: myindex
     real(dp) :: drc,volr,volk,dx,dy,dz,vol,rad
     real(dp) :: aPerp(3), S0, S1, myat(3)
-    real(dp) :: gval, gvalTot
+    real(dp) :: gval, gvalTot, preexp
     real(8), allocatable :: gvalVect(:)
     real(dp) :: rough
     real(dp),allocatable :: x(:,:),y(:,:),z(:,:),rpar(:,:,:)
@@ -56,21 +56,20 @@ contains
     a3 = lattice_vectors(3,:)
     
     !Discretization
-    !ni = 40 ; nj = 80 ; nk = 80
     dx = 1.0_dp ; dy = 1.0_dp ; dz = 1.0_dp
     dx = dx/real(ni)
     dy = dy/real(nj)
     dz = dz/real(nk)
 
     myindex = 0
-    !Rad probe
-    !rad = 1.0_dp
+    
     allocate(gvalVect(ni*nj*nk))
-
+  
+    preexp=10.0_dp/exp(-0.1_dp)
     !$omp parallel do default (none) &
     !$omp shared(ni,nj,nk,dx,dy,dz) &
     !$omp shared(a1,a2,a3,coords,nats) &
-    !$omp shared(rad,gvalVect) &
+    !$omp shared(rad,gvalVect,preexp) &
     !$omp private(i,j,k,l,rijk,myindex) &
     !$omp private(drc,myat,gval,gvalTot) 
     do i=1,ni
@@ -84,12 +83,12 @@ contains
               do n = -1,1
                 myat = (coords(:,l)) + m*a2 + n*a3
                 drc = norm2(rijk - myat)
-                gval = 10*exp(-0.1*drc**2)/exp(0.1_dp)
+                gval = exp(-0.1_dp*drc**2)
                 gvalTot = gvalTot + gval
               enddo
             enddo
           enddo
-          gvalVect(myindex) = gvalTot
+          gvalVect(myindex) = preexp*gvalTot
         enddo
       enddo
     enddo
