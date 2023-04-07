@@ -1,0 +1,47 @@
+#Clustergen input file
+
+LCC{
+
+  ClusterType=		      Bulk
+  Verbose= 10
+  ClusterNumber=		    0
+  
+  Truncation=		        0.0
+
+
+  LatticeBaseFile= "acetone.xyz"
+  
+
+  ReadLatticeFromFile= F
+
+  TypeOfLattice= 	      Triclinic 
+  LatticePoints= 		    0	
+  LatticePointsX1=	    -2	
+  LatticePointsX2=           2
+  LatticePointsY1=	    -2
+  LatticePointsY2=	     2
+  LatticePointsZ1=	    -2	
+  LatticePointsZ2=	     2
+  PrimitiveFormat=      Angles      
+  AtomType= 		        X 	
+  UseLatticeBase= 	  	T
+  BaseFormat=		        xyz      	
+  CutAfterAddingBase= 	F
+  RandomSeed= 100
+  RCoeff= 0.0
+  RandomRotations= T
+  SetDensity= 0.7845
+  WriteCml= T
+  CenterAtBox= T
+  
+  LatticeConstanta=	    4.9712913933479976 
+  LatticeConstantb=	    4.9712913933479976
+  LatticeConstantc=	    4.9712913933479976
+
+  LatticeAngleAlpha=     90.0
+  LatticeAngleBeta=		   90.0
+  LatticeAngleGamma=     90.0
+
+}
+
+
