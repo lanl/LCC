@@ -76,7 +76,7 @@ contains
       do j=1,nj
         do k=1,nk
           myindex = (i-1)*nj*nk + (j-1)*nk + k
-          rijk = a1*i*dx + a2*j*dy + a3*k*dz + a1
+          rijk = a1*i*dx + a2*j*dy + a3*k*dz + a1/2.0_dp
           gvalTot = 0.0_dp
           do l = 1,nats
             do m = -1,1
@@ -114,9 +114,9 @@ contains
         do i = 1,ni
           !Get highest point after isoval
           if(rpar(i,j,k) < isoval)then
-            x(j,k) = a1(1)*i*dx + a2(1)*j*dy + a3(1)*k*dz + a1(1)
-            y(j,k) = a1(2)*i*dx + a2(2)*j*dy + a3(2)*k*dz + a1(2)
-            z(j,k) = a1(3)*i*dx + a2(3)*j*dy + a3(3)*k*dz + a1(3)
+            x(j,k) = a1(1)*i*dx + a2(1)*j*dy + a3(1)*k*dz + a1(1)/2.0_dp
+            y(j,k) = a1(2)*i*dx + a2(2)*j*dy + a3(2)*k*dz + a1(2)/2.0_dp
+            z(j,k) = a1(3)*i*dx + a2(3)*j*dy + a3(3)*k*dz + a1(3)/2.0_dp
             exit
           endif
         enddo
