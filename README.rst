@@ -283,29 +283,3 @@ with the following :code:`bibtex` snipped:
                chemistry; unit cells",
     language = "en"
   }
- 
-
-Another citation source is the following journal article (`DOI:
-10.1007/s11227-018-2533-0 <https://doi.org/10.1007/s11227-018-2533-0>`_):
-
-.. code-block:: bibtex
-
-  @article{bock2018basic,
-    title     = {The basic matrix library (BML) for quantum chemistry},
-    author    = {Bock, Nicolas and
-                 Negre, Christian FA and
-                 Mniszewski, Susan M and
-                 Mohd-Yusof, Jamaludin and
-                 Aradi, B{\'a}lint and
-                 Fattebert, Jean-Luc and
-                 Osei-Kuffuor, Daniel and
-                 Germann, Timothy C and
-                 Niklasson, Anders MN},
-    journal   = {The Journal of Supercomputing},
-    volume    = {74},
-    number    = {11},
-    pages     = {6201--6219},
-    year      = {2018},
-    publisher = {Springer}
-  }
-
