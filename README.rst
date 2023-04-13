@@ -251,4 +251,61 @@ After being added to the project do the followig:
 SUGGESTION: Please, avoid commiting a large number of changes since it is difficult to review. Instead, 
 add the changes gradually.
 
+Citing
+------
+
+If you find this code useful, we encourage you to cite us. Our project has a
+citable DOI (`DOI:10.1088/1361-648X/acc294 <https://doi.org/10.1088/1361-648X/acc294>`_) 
+with the following :code:`bibtex` snipped:
+
+.. code-block:: bibtex
+
+  @ARTICLE{lcc,
+     title    = "A methodology to generate crystal-based molecular structures for
+               atomistic simulations",
+    author   = "Negre, Christian F A and Alvarado, Andrew and Singh, Himanshu and
+               Finkelstein, Joshua and Martinez, Enrique and Perriot, Romain",
+    abstract = "We propose a systematic method to construct crystal-based
+               molecular structures often needed as input for computational
+               chemistry studies. These structures include crystal 'slabs' with
+               periodic boundary conditions (PBCs) and non-periodic solids such
+               as Wulff structures. We also introduce a method to build crystal
+               slabs with orthogonal PBC vectors. These methods are integrated
+               into our code,Los Alamos Crystal Cut(LCC), which is open source
+               and thus fully available to the community. Examples showing the
+               use of these methods are given throughout the manuscript.",
+    journal  = "J. Phys. Condens. Matter",
+    volume   =  35,
+    number   =  22,
+    month    =  mar,
+    year     =  2023,
+    keywords = "crystal structures; extended structures; miller indices; quantum
+               chemistry; unit cells",
+    language = "en"
+  }
+ 
+
+Another citation source is the following journal article (`DOI:
+10.1007/s11227-018-2533-0 <https://doi.org/10.1007/s11227-018-2533-0>`_):
+
+.. code-block:: bibtex
+
+  @article{bock2018basic,
+    title     = {The basic matrix library (BML) for quantum chemistry},
+    author    = {Bock, Nicolas and
+                 Negre, Christian FA and
+                 Mniszewski, Susan M and
+                 Mohd-Yusof, Jamaludin and
+                 Aradi, B{\'a}lint and
+                 Fattebert, Jean-Luc and
+                 Osei-Kuffuor, Daniel and
+                 Germann, Timothy C and
+                 Niklasson, Anders MN},
+    journal   = {The Journal of Supercomputing},
+    volume    = {74},
+    number    = {11},
+    pages     = {6201--6219},
+    year      = {2018},
+    publisher = {Springer}
+  }
 
