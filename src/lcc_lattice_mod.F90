@@ -10,6 +10,7 @@ module lcc_lattice_mod
   use lcc_structs_mod
   use lcc_allocation_mod
   use lcc_message_mod
+  use lcc_aux_mod
 
   implicit none
 
@@ -61,7 +62,7 @@ contains
       call lcc_reallocate_realMat(ltt%bulk,3,sy%nats)
       ltt%bulk = sy%coordinate
     endif
-    
+
     allocate(auxArr(3))
     auxArr = ltt%lattice_vectors(1,:)
     call lcc_print_realVect("Lattice vector a1",auxArr," [Ang]",bld%verbose)
@@ -145,7 +146,6 @@ contains
       do j = 1,ltt%sybase%nats
         ai = ai + 1
         if(ltt%base_format == "xyz")then
-          !write(*,*)"Symmetry operations not implemented for xyz format"
           ltt%r_base(1,ai) =  ltt%bssym(1,i)*ltt%r_base(1,ai)
           ltt%r_base(1,ai) =  ltt%r_base(1,ai) + ltt%bsopload(i)*ltt%bstr(1,i)*ltt%lattice_vectors(1,1)
           ltt%r_base(1,ai) =  ltt%r_base(1,ai) + ltt%bsopload(i)*ltt%bstr(1,i)*ltt%lattice_vectors(2,1)
@@ -165,16 +165,13 @@ contains
           ltt%r_base(2,ai) =  ltt%bssym(2,i)*ltt%r_base(2,ai) + ltt%bsopload(i)*ltt%bstr(2,i)
           ltt%r_base(3,ai) =  ltt%bssym(3,i)*ltt%r_base(3,ai) + ltt%bsopload(i)*ltt%bstr(3,i)
 
-          if(ltt%getOptTrs)then 
-            if(i > 0 .and. j == 1)then
-              call lcc_minimize_from(ltt%r_base(:,:),i,ai,ltt%sybase%nats,myTrs,verbose)
-            endif
-            ltt%r_base(:,ai) =  ltt%r_base(:,ai) + myTrs
-          endif
-
         endif
       enddo
     enddo
+
+    if(ltt%getOptTrs)then
+      call lcc_get_bestTranslations(ltt%Nop,ltt%sybase%nats,ltt%r_base,bld%verbose)
+    endif
 
     call prg_get_recip_vects(ltt%lattice_vectors,ltt%recip_vectors,ltt%volr,ltt%volk)
 
@@ -299,7 +296,7 @@ contains
     allocate(r_cluster_in(3,natsCluster))
     allocate(resindex_in(natsCluster))
     allocate(atom_in(natsCluster))
-   
+
     if(ltt%base_format.eq.'abc')then
       cont = 0
       do i=1,sy%nats
@@ -636,7 +633,7 @@ contains
 
   end subroutine lcc_add_randomness
 
-  !> To get the best translation that minimizes the 
+  !> To get the best translation that minimizes the
   !! distance to any previous fragment.
   !! \param xVar Coordinates of the full basis (including symmetry operations).
   !! \param i Fragmet being added at the "i" operation.
@@ -677,11 +674,74 @@ contains
       enddo
     enddo
     trs = myTrs
-    if(verbose >= 1)then 
+    if(verbose >= 1)then
       call lcc_print_intVal("Optimal translations for operation",i,"",verbose)
       write(*,*)i,trs
     endif
 
   end subroutine lcc_minimize_from
+
+  !> To get the best translation that minimizes the
+  !! distance to any previous fragment.
+  !! \param nop Number of symmetry operations
+  !! \param nats Number of atoms in each fragment
+  !! \param r_inout Coordinates for the fragment
+  !! \param verbose Verbosity level
+  !!
+  subroutine lcc_get_bestTranslations(nop,nats,r_inout,verbose)
+
+    implicit none
+    integer, intent(in) :: nop, nats, verbose
+    real(dp), allocatable, intent(inout) :: r_inout(:,:)
+    real(dp) :: gc(3),gcr(3),d,dmin
+    real(dp), allocatable :: gcv(:,:), r_aux(:,:)
+    real(dp), allocatable :: trs(:,:)
+    integer :: i,j,k,l,m
+
+    call lcc_print_message("Getting optimal translation ...",verbose)
+
+    !Get the geometric centers of each fragments
+    allocate(r_aux(3,nats))
+    allocate(gcv(3,nop))
+    do i = 1,nop
+      do j = 1,nats
+        r_aux = r_inout(:,nats*(i-1)+1:nats*i)
+        call lcc_get_geometricCenter(r_aux,gc)
+        gcv(:,i) = gc
+      enddo
+    enddo
+
+    allocate(trs(3,nop))
+    trs(:,:) = 0.0_dp
+    do i = 2,nop
+      dmin = 1000.0_dp
+      do j = 1,i-1
+        do k = -2,2
+          do l = -2,2
+            do m = -2,2
+              gcr(1) = gcv(1,i) + real(k,dp)
+              gcr(2) = gcv(2,i) + real(l,dp)
+              gcr(3) = gcv(3,i) + real(m,dp)
+              d = norm2(gcr(:) - gcv(:,j)) !Distance to any previous fragment
+              if(d < dmin)then
+                dmin = d
+                trs(1,i) = real(k,dp)
+                trs(2,i) = real(l,dp)
+                trs(3,i) = real(m,dp)
+              endif
+            enddo
+          enddo
+        enddo
+      enddo
+      gcv(:,i) = gcv(:,i) + trs(:,i)
+      !Translate fragment
+      do j = nats*(i-1)+1,nats*i
+        r_inout(:,j) = r_inout(:,j) + trs(:,i)
+      enddo
+    enddo
+
+  end subroutine lcc_get_bestTranslations
+
+
 
 end module lcc_lattice_mod
