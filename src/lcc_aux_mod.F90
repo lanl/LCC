@@ -13,7 +13,7 @@ module lcc_aux_mod
   public :: lcc_get_coordination, lcc_vectors_to_parameters
   public :: lcc_parameters_to_vectors, lcc_center_at_box
   public :: lcc_canonical_basis, lcc_center_at_origin
-  public :: lcc_get_reticular_density
+  public :: lcc_get_reticular_density, lcc_get_geometricCenter
 
 contains
 
@@ -392,5 +392,20 @@ contains
     r3(3) = r1(1)*r2(2) - r1(2)*r2(1)
 
   end function crossProd
+
+  subroutine lcc_get_geometricCenter(r_inout,geomCent)
+    real(dp), allocatable, intent(in) :: r_inout(:,:)
+    real(dp), intent(out) :: geomCent(3)
+    integer :: nats,i
+
+    nats = size(r_inout,dim=2)
+
+    geomCent = 0.0_dp
+    do i = 1,nats
+      geomCent = geomCent + r_inout(:,i)
+    enddo
+    geomCent = geomCent/real(nats,dp)
+
+  end subroutine  lcc_get_geometricCenter
 
 end module lcc_aux_mod
