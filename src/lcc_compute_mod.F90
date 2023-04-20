@@ -65,11 +65,11 @@ contains
     
     allocate(gvalVect(ni*nj*nk))
   
-    preexp=10.0_dp/exp(-0.1_dp)
+    preexp=10.0_dp/(rab*sqrt(2*pi))
     !$omp parallel do default (none) &
     !$omp shared(ni,nj,nk,dx,dy,dz) &
     !$omp shared(a1,a2,a3,coords,nats) &
-    !$omp shared(rad,gvalVect,preexp) &
+    !$omp shared(rab,gvalVect,preexp) &
     !$omp private(i,j,k,l,rijk,myindex) &
     !$omp private(drc,myat,gval,gvalTot) 
     do i=1,ni
@@ -83,7 +83,7 @@ contains
               do n = -1,1
                 myat = (coords(:,l)) + m*a2 + n*a3
                 drc = norm2(rijk - myat)
-                gval = exp(-0.1_dp*drc**2)
+                gval = exp(-0.5_dp*(drc**2/rab**2))
                 gvalTot = gvalTot + gval
               enddo
             enddo
