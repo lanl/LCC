@@ -10,13 +10,13 @@ Welcome to lcc's documentation!
    :maxdepth: 2
    :caption: Contents:
    
-   ./README-main
-   ./INPUT
-   ./LATTICES
-   ./SLAB
-   ./BUILD
-   ./REGULAR
-   ./COMPUTE
+   ./README-main.rst
+   ./INPUT.md
+   ./LATTICES.md
+   ./SLAB.md
+   ./BUILD.md
+   ./REGULAR.md
+   ./COMPUTE.md
    
 
 

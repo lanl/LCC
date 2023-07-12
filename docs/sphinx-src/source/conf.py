@@ -39,8 +39,8 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
-    'recommonmark']
+    'sphinx.ext.githubpages']
+#    'recommonmark']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -207,13 +207,13 @@ epub_exclude_files = ['search.html']
 
 # Example configuration for intersphinx: refer to the Python standard library.
 #---sphinx-themes-----
-html_theme = 'p-red'
+html_theme = 'sphinx_rtd_theme'
 #html_theme = 'rtd'
 import os
-from PSphinxTheme import utils
+#from PSphinxTheme import utils
   
-p, html_theme, needs_sphinx = utils.set_psphinxtheme(html_theme)
-html_theme_path = p
+#p, html_theme, needs_sphinx = utils.set_psphinxtheme(html_theme)
+#html_theme_path = p
 
 
 #intersphinx_mapping = {'https://docs.python.org/': None}
