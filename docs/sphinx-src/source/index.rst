@@ -11,12 +11,12 @@ Welcome to lcc's documentation!
    :caption: Contents:
    
    ./README-main.rst
-   ./INPUT.rst
-   ./LATTICES.rst
-   ./SLAB.rst
-   ./BUILD.rst
-   ./REGULAR.rst
-   ./COMPUTE.rst
+..   ./INPUT.rst
+..  ./LATTICES.rst
+..   ./SLAB.rst
+..   ./BUILD.rst
+..   ./REGULAR.rst
+..   ./COMPUTE.rst
    
 
 
