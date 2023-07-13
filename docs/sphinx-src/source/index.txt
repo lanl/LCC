@@ -12,6 +12,8 @@ Welcome to lcc's documentation!
    
    ./README-main.rst
    ./TEST.rst
+   ./README-doc.rst
+   ./BUILD.rst
    
 
 
