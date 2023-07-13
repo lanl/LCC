@@ -19,9 +19,10 @@ with coordination = 3 will be included in the shape.
 
 An exaple input file is given as follows: 
 
-```python
-#Lcc input file.
- LCC{
+.. code-clock:: bash
+
+  #Lcc input file.
+  LCC{
    JobName=                 AgBulk        #Or any other name
 
    ClusterType=             BravaisGrowth
@@ -41,22 +42,22 @@ An exaple input file is given as follows:
    AtomType=                Ag
    PrimitiveFormat=         Angles        #Will use angles and edges
    LatticeConstanta=        4.08
-}
-```
+  }
+
 
 The `NumberOfIterations` parameter controls the cycles of gorwing that we want. The `SeedFile`
 paramter is the name of the file containg the "seed" from where the shape will grow. For this
 particular exaple we will used a seed (`seed.pdb`) file with the following content" 
 
-```bash 
-REMARK                      Seed File 
-TITLE coords.pdb
-CRYST1  137.192  231.464  154.494  90.00 102.65  90.00 P 1           1
-MODEL                   1
-ATOM      1  Ag  M       1       0.000   0.000   0.000  0.00  0.00          Ag
-TER
-END
-```
+.. code-clock:: bash
+
+  REMARK                      Seed File 
+  TITLE coords.pdb
+  CRYST1  137.192  231.464  154.494  90.00 102.65  90.00 P 1           1
+  MODEL                   1
+  ATOM      1  Ag  M       1       0.000   0.000   0.000  0.00  0.00          Ag
+  TER
+  END
 
 This means that we will be growing from "only one" Ag atom center at the origin.
 The result is the following shape:
@@ -67,7 +68,6 @@ The result is the following shape:
 </p>
 
 
-
 ## Cutting using planes.
 
 A crystal shape can also be cut using planes. This could be usefull to comput a Wolff 
@@ -75,9 +75,10 @@ type of crystal shape by listing the planes and the surface energies or just for
 creating a "slab" to study a particular surface. An example of cutting by planes is provided
 as follows:
 
-```python
-#Lcc input file.
- LCC{
+.. code-clock:: bash
+
+  #Lcc input file.
+  LCC{
    JobName=                 AgPlanes        #Or any other name
    Verbose=                 3
 
@@ -96,9 +97,8 @@ as follows:
     0 -1 0 4.1
     0 0 -1 4.1
     0 0 1 4.1
-]
-}
-```
+  ]
+  }
 
 This creates the following cubic shape:
 ![Slab generated from planes](cube.png)
