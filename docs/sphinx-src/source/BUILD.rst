@@ -20,7 +20,7 @@ with coordination = 3 will be included in the shape.
 
 An exaple input file is given as follows: 
 
-.. code-clock:: bash
+.. code-block:: bash
 
   #Lcc input file.
   LCC{
@@ -50,7 +50,7 @@ The `NumberOfIterations` parameter controls the cycles of gorwing that we want. 
 paramter is the name of the file containg the "seed" from where the shape will grow. For this
 particular exaple we will used a seed (`seed.pdb`) file with the following content" 
 
-.. code-clock:: bash
+.. code-block:: bash
 
   REMARK                      Seed File 
   TITLE coords.pdb
@@ -76,7 +76,7 @@ type of crystal shape by listing the planes and the surface energies or just for
 creating a "slab" to study a particular surface. An example of cutting by planes is provided
 as follows:
 
-.. code-clock:: bash
+.. code-block:: bash
 
   #Lcc input file.
   LCC{
@@ -102,10 +102,9 @@ as follows:
   }
 
 This creates the following cubic shape:
-.. ![Slab generated from planes](cube.png)
+.. image:: ../../figures/cube.png
+  :width: 400
+  :alt: Slab generated from planes
 
-.. <p align="center">
-.. <img src="docs/figures/cube.png" width="30%" height="30%">
-.. </p>
 
  
