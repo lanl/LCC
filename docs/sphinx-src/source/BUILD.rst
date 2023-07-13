@@ -1,7 +1,8 @@
 Building/cutting a shape
 ========================
 
-## Growing shapes from a seed file. 
+Growing shapes from a seed file 
+################################
 
 The Bravais theory says that a crystal face will grow
 faster is the atom/unit cell that is added to the face 
@@ -62,10 +63,10 @@ particular exaple we will used a seed (`seed.pdb`) file with the following conte
 This means that we will be growing from "only one" Ag atom center at the origin.
 The result is the following shape:
 
-![Crystal shape generateg by growing](cuboOct.png)
-<p align="center">
-<img src="docs/figures/cuboOct.png" width="30%" height="30%">
-</p>
+.. ![Crystal shape generateg by growing](cuboOct.png)
+.. <p align="center">
+.. <img src="docs/figures/cuboOct.png" width="30%" height="30%">
+.. </p>
 
 
 ## Cutting using planes.
@@ -101,10 +102,10 @@ as follows:
   }
 
 This creates the following cubic shape:
-![Slab generated from planes](cube.png)
+.. ![Slab generated from planes](cube.png)
 
-<p align="center">
-<img src="docs/figures/cube.png" width="30%" height="30%">
-</p>
+.. <p align="center">
+.. <img src="docs/figures/cube.png" width="30%" height="30%">
+.. </p>
 
  
