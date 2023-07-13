@@ -63,13 +63,12 @@ particular exaple we will used a seed (`seed.pdb`) file with the following conte
 This means that we will be growing from "only one" Ag atom center at the origin.
 The result is the following shape:
 
-.. ![Crystal shape generateg by growing](cuboOct.png)
-.. <p align="center">
-.. <img src="docs/figures/cuboOct.png" width="30%" height="30%">
-.. </p>
+.. image:: ./_static/figures/cuboOct.png
+  :width: 400
 
 
-## Cutting using planes.
+Cutting using planes
+#####################
 
 A crystal shape can also be cut using planes. This could be usefull to comput a Wolff 
 type of crystal shape by listing the planes and the surface energies or just for 
@@ -102,7 +101,8 @@ as follows:
   }
 
 This creates the following cubic shape:
-.. image:: ../../figures/cube.png
+
+.. image:: ./_static/figures/cube.png
   :width: 400
   :alt: Slab generated from planes
 
