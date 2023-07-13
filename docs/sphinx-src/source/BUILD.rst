@@ -11,11 +11,11 @@ a high reticular density will grow slower since the adatom
 will potentially find only a "top" position. 
 
 Here we give an example of how to grow a shape from a seed 
-using only geometrical parameters which are: the MinCoordination
-and and the RCut. RCut is used as a criterion to search for the 
+using only geometrical parameters which are: the ``MinCoordination``
+and the ``RCut``. ``RCut`` is used as a criterion to search for the 
 coordination. If the adatom (possible atom to be included in the 
-shape) has a 3 atoms that are within RCut, the coordination of 
-such an adatom will be 3. If MinCoordination = 2, the the adatom 
+shape) has 3 atoms that are within ``RCut``, the coordination of 
+such an adatom will be 3. If ``MinCoordination = 2``, the the adatom 
 with coordination = 3 will be included in the shape. 
 
 An exaple input file is given as follows: 
@@ -46,9 +46,9 @@ An exaple input file is given as follows:
   }
 
 
-The `NumberOfIterations` parameter controls the cycles of gorwing that we want. The `SeedFile`
+The ``NumberOfIterations`` parameter controls the cycles of gorwing that we want. The ``SeedFile``
 paramter is the name of the file containg the "seed" from where the shape will grow. For this
-particular exaple we will used a seed (`seed.pdb`) file with the following content" 
+particular exaple we will used a seed (``seed.pdb``) file with the following content" 
 
 .. code-block:: bash
 
@@ -70,7 +70,7 @@ The result is the following shape:
 Cutting using planes
 #####################
 
-A crystal shape can also be cut using planes. This could be usefull to comput a Wolff 
+A crystal shape can also be cut using planes. This could be usefull to comput a Wulff 
 type of crystal shape by listing the planes and the surface energies or just for 
 creating a "slab" to study a particular surface. An example of cutting by planes is provided
 as follows:

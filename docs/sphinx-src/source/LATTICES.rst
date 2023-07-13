@@ -4,13 +4,13 @@ Building a Lattice
 In this section we briefly explain how to build a lattice using LCC.
 The finite set of points obtained in this ways has the shape that is
 bound by crystal faces which are paralell to the 
-"canonical Miller planes" (1,0,0), (0,1,0), and (0,0,1)
+"canonical Miller planes" (100), (010), and (001)
 We will first execute lcc without any input file to create a sample 
 input. Syntax follows::
 
   ./lcc_main 
 
-This will generate a sample input file called `sample_input.in`. You can 
+This will generate a sample input file called ``sample_input.in``. You can 
 either edit this file or make a new one having the following::
 
   #Lcc input file.
@@ -27,8 +27,8 @@ In order to run the code, just type::
 
   ./lcc_main sample_input.in
 
-The run will produce two coordinate files `*_coords.xyz` 
-and `*_coords.pdb`. If we visualize this with VMD we get the following 
+The run will produce two coordinate files ``*_coords.xyz`` 
+and ``*_coords.pdb``. If we visualize this with VMD we get the following 
 "piece of bulk" for Silver 
 
 .. image:: ./_static/figures/AgBulk.png

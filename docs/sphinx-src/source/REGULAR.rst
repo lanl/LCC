@@ -1,3 +1,5 @@
+.. _RST regular:
+
 Building regular shapes
 =======================
 
@@ -21,7 +23,8 @@ to do this can be entered as follows:::
   }
 
 This will produce the following "oblate":
-.. image:: prolate.png
+
+.. image:: ./_static/figures/prolate.png
   :width: 400
   :alt: Oblate shape
 
