@@ -24,12 +24,11 @@ Sphinx is a documentation generator or a tool that translates a set of plain tex
 These programs can be installed as follows::
 
   sudo apt-get install pdflatex 
-  udo apt-get install doxygen 
-  udo apt-get install dot2tex
-  udo apt-get install dot2tex
-  udo apt-get install python3-sphinx
-  ip3 install PSphinxTheme
-  ip3 install recommonmark
+  sudo apt-get install doxygen 
+  sudo apt-get install dot2tex
+  sudo apt-get install python3-sphinx
+  pip3 install PSphinxTheme
+  pip3 install recommonmark
 
 Build the full documentation
 #############################
@@ -56,16 +55,6 @@ Documenting
 In order to add a documentation using Sphinx follow these steps: 
   1) make a file with a proper name under `./sphinx-src/source/`. For example: `MYPAGE.md`. 
   2) Add the documentation inside the file using "markdown" syntax. 
-  3) Modify the file in `./sphinx-src/source/index.txt` to include the documentation just as shown 
-  in the following example::
-
-
-    .. toctree::
-      :maxdepth: 2
-      :caption: Contents:
-
-      ./README-main
-      ./README
-      ./MYPAGE
+  3) Modify the file in `./sphinx-src/source/index.txt` to include the documentation.
 
 After modyfing this file, recompile Sphinx by typing `make sphinx`.

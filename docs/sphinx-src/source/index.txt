@@ -7,13 +7,19 @@ Welcome to lcc's documentation!
 =================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
    
    ./README-main.rst
    ./TEST.rst
    ./README-doc.rst
+   ./INPUT.rst
+   ./LATTICES.rst
    ./BUILD.rst
+   ./SLAB.rst
+   ./REGULAR.rst
+   ./COMPUTE.rst
+
    
 
 

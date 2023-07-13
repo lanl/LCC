@@ -1,15 +1,16 @@
-Building a slab
-===============
+Computing Roughness
+===================
 
-In this tutorial we will explain the steps to construct 
-a crystal "slab" that could be used to study a particular 
-surface.
+In this tutorial we will explain the steps to compute 
+a crystal surface Roughness defined as the ration between 
+the "effective" surface and the "flat" surface.
 
-We will hereby use sucrose as an example. We will build the 
-(0 1 1) surface and create a periodic slab. The data (CIF file) 
-on sucrose was downloaded from `svn://www.crystallography.net/cod/cif/3/50/00/3500015.cif` 
+We will hereby use sucrose as an example. We will analyse 
+(1 0 0) and (10-1) crystal faces. Lattice information on 
+sucrose was downloaded from `svn://www.crystallography.net/cod/cif/3/50/00/3500015.cif`
 
-To this end we will use the following input file:: 
+To this end we will use the following input file which can 
+be also found under `/examples/Roughness`::
 
   LCC{
     ClusterType=          Planes
@@ -19,9 +20,10 @@ To this end we will use the following input file::
     WriteCml= F
     CheckPeriodicity= T
 
-    ReadLatticeFromFile=  F
+    ReadLatticeFromFile= F
     TypeOfLattice=        Triclinic
     LatticePoints=        30
+
     CheckLattice=         T
 
     PrimitiveFormat=      Angles
@@ -46,28 +48,46 @@ To this end we will use the following input file::
     #-X,1/2+Y,-Z
     SymmetryOperations= T
     NumberOfOperations= 2
-    OptimalTranslations= T
+    OptimalTranslations= F
     Translations[
-      0  0   0   0
-      0  1   0   0.5
+     1  0   1   -1
+     0  1   2   0.5
     ]
     Symmetries[
-      1  1  1
+       1  1  1
       -1  1 -1
     ]
 
-   NumberOfPlanes=   6
-   Planes[
-    0  1   1   2.5
-    0 -1  -1   1.5
-    0 -1   1   4.5
-    0  1  -1   3.5
-    1  0   0   2.5
-   -1  0   0   1.5
-  ]
+    NumberOfPlanes=   6
 
-The "basis" needs to be provided via the `lattice_basis.xyz` file. The 
-content of such file is provided below::
+    ComputeRoughness= T
+    RoughnessParameters[
+      50.0 1.0 40 80 80
+    ]
+
+    Planes[
+      1  0   0   2.5
+      -1  0  0   1.5
+      0  1   0   4.5
+      0  -1  0   3.5
+      0  0   1   2.5
+      0  0   -1   1.5
+    ]
+
+    #Planes[
+      1  0   -1   2.5
+      -1  0  1   1.5
+      0 -1   0   4.5
+      0  1  0   1.5
+      1  0   1   4.5
+      -1  0   -1   1.5
+    ]
+
+  }
+
+The "basis" needs to be provided via the `lattice_basis.xyz` file. The
+content of such file is provided below and can also be found under 
+`/examples/Roughness`::
 
   45
   #Sucrose basis
@@ -117,47 +137,40 @@ content of such file is provided below::
   H  0.8058      0.3509     1.0352
   H  0.553      -0.128      0.642
 
-The first run we will do needs to have `UseLatticeBase=  F`. In this 
-way we will be able to inspect the 
-lattice points and make sure that we get a periodic slab. 
-The code automatically checks the periodicity. If the Miler planes 
-are not ensuring periodicity, the code will raise an error. The 
-lattice could be visualized with avogadro or vmd.::
+The first run we will do needs to have the first plane listed 
+uncommented. Note that the first plane listed will be the 
+one used to compute the roughness. After executing lcc as 
+follows::
 
-  avogadro coords.cml
+  lcc_main sucrose.in 
 
-or:: 
+We will get information about the surfa areas S1 (effective) and S0 
+(flat) surface areas, together with their ratios.
 
-  vmd -f coords.pdb
+The run will also produce a file called `mask.xyz` which contains 
+a set of coordinates showing the surface pattern of the crystal 
+face (`vmd -e mystate.vmd`). 
 
-This will show the following structure: 
+.. image:: ./_static/figures/roughness100.png
+  :alt: Mask showing the details of the 100 surface
 
-.. image:: ./_static/figures/slab.png
+If we now uncomment the second plane (10-1) and rerun we will 
+see the following surface:
 
-The next step is to run the code with `UseLatticeBase=  T` to generate 
-the final structure. Note that the input file contains the symetry operation
-to "complete" the unit cell. 
-After running the code we will get the following structure:
+.. image:: ./_static/figures/roughness10-1.png
+  :alt: Mask showing the details of the 10-1 surface
 
-.. image:: ./_static/figures/slab_basis.png
-  :width: 400
-  :alt: Slab generated from planes
+The parameters controlling these computations in the input 
+file are the following::
 
-Building a slab from three PBC vectors 
-****************************************
+  ComputeRoughness= T
+  RoughnessParameters[
+  50.0 1.0 40 80 80
+  ]
 
-Another method we have to build a crystal slab is to give the program the PBC vectors. For this, 
-we will set `ClusterType=` to `ClusterType= Slab`. We will also need to give the PBC vectors and their 
-lenghts as follows::
+The first value controls the isovalue to compute the surface, the
+second value controls the radius of the "probe sphere" used to 
+construct the surface, the third, fourth and fifth values control
+the discretization along the a1, a2, and a3 axis respectivelly. 
 
-  Slab[
-      1.0 0.0 0.0 10.0
-      0.0 1.0 1.0 10.0
-      0.0 0.0 1.0 10.0
-      ]
-
-The latter input block means that the first vector will be the (1,0,0) with lenght 10.0. Note that three 
-general vectors cannot guarantee that the slab will be congruent with the lattice. If we give three 
-random vectors and have `CheckPeriodicity= T`, the code will most likely give an error.
-An example of construction of this type of slab can be find in `examples/build_from_vectors/`. 
 
