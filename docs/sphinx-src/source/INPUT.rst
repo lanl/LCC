@@ -78,7 +78,7 @@ And example follows::
   BAxis=   2.0 #Radius in direction y
   CAxis=   2.0 #Radius in direction z
 
-See section :ref:`regular` to see another example.
+See section :doc:`regular <./REGULAR>`  to see another example.
 
 `ClusterType= Planes`
 ***********************

@@ -6,11 +6,11 @@ a crystal surface Roughness defined as the ration between
 the "effective" surface and the "flat" surface.
 
 We will hereby use sucrose as an example. We will analyse 
-(1 0 0) and (10-1) crystal faces. Lattice information on 
+(100) and (10-1) crystal faces. Lattice information on 
 sucrose was downloaded from `svn://www.crystallography.net/cod/cif/3/50/00/3500015.cif`
 
 To this end we will use the following input file which can 
-be also found under `/examples/Roughness`::
+be also found under ``/examples/Roughness``::
 
   LCC{
     ClusterType=          Planes
@@ -85,9 +85,9 @@ be also found under `/examples/Roughness`::
 
   }
 
-The "basis" needs to be provided via the `lattice_basis.xyz` file. The
+The "basis" needs to be provided via the ``lattice_basis.xyz`` file. The
 content of such file is provided below and can also be found under 
-`/examples/Roughness`::
+``/examples/Roughness``::
 
   45
   #Sucrose basis
@@ -147,9 +147,9 @@ follows::
 We will get information about the surfa areas S1 (effective) and S0 
 (flat) surface areas, together with their ratios.
 
-The run will also produce a file called `mask.xyz` which contains 
+The run will also produce a file called ``mask.xyz`` which contains 
 a set of coordinates showing the surface pattern of the crystal 
-face (`vmd -e mystate.vmd`). 
+face (``vmd -e mystate.vmd``). 
 
 .. image:: ./_static/figures/roughness100.png
   :alt: Mask showing the details of the 100 surface

@@ -12,18 +12,16 @@ clean:
 	rm -rf ./doxy-out
 
 doxy:
+	(cp ./sphinx-src/source/*.rst ./doxy-src/ ; cd ./doxy-src ; ./rst2md.sh) 
 	(doxygen ./doxy-src/Doxyfile)	
-	(cp ../README.rst ./README-main.md)
 	(cd $(DIR)/doxy-out/latex ; make)	
 	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_devel.pdf)
-	(doxygen ./doxy-src/Doxyfile_user)	
-	(cd $(DIR)/doxy-out/latex ; make)	
-	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_user.pdf)
 
 sphinx:
-	(cp ../README.rst ./sphinx-src/source/README-main.md)
-	(cp ./README.rst ./sphinx-src/source/)
-	(cd sphinx-src/source; mkdir _static; sphinx-build -b html . ../../sphinx-out)
-	(cp -r figures sphinx-out/docs/)
+	(cp ../README.rst ./sphinx-src/source/README-main.rst)
+	(cp ./README-doc.rst ./sphinx-src/source/README-doc.rst)
+	(cd sphinx-src/source; sphinx-build -b html . ../../sphinx-out)
+	(cd sphinx-src/source; sphinx-build -b latex . ../../sphinx-out)
+	(cd ./sphinx-out ; make ; cp lcc.pdf ../lcc_user.pdf)
 	(rm lcc_user.html; ln -s ./sphinx-out/index.html ./lcc_user.html)
 
