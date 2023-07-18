@@ -10,13 +10,14 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  
+ 
   apt_packages:
     - graphviz
     - cmake
 
-  commands:
-    - cd docs; make doxy; cd - 
+  jobs:
+    pre_create_environment:
+      - cd docs; make doxy; cd - 
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
