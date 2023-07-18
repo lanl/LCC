@@ -12,10 +12,10 @@ clean:
 	rm -rf ./doxy-out
 
 doxy:
-	(cp ./sphinx-src/source/*.rst ./doxy-src/ ; cd ./doxy-src ; ./rst2md.sh) 
 	(doxygen ./doxy-src/Doxyfile)	
 	(cd $(DIR)/doxy-out/latex ; make)	
 	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_devel.pdf)
+	(cp -r doxy-out/html ./sphinx-out/_static/doxy)
 
 sphinx:
 	(cp ../README.rst ./sphinx-src/source/README-main.rst)
