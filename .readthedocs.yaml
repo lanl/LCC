@@ -15,8 +15,8 @@ build:
     - graphviz
     - cmake
 
-#  commands:
-#    - cd docs; make doxy 
+  commands:
+    - cd docs; make doxy; cd - 
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
