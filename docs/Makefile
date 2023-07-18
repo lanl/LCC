@@ -13,8 +13,8 @@ clean:
 
 doxy:
 	(doxygen ./doxy-src/Doxyfile)	
-	(cd $(DIR)/doxy-out/latex ; make)	
-	(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_devel.pdf)
+	#(cd $(DIR)/doxy-out/latex ; make)	
+	#(cp $(DIR)/doxy-out/latex/refman.pdf lcc_refman_devel.pdf)
 	(cp -r doxy-out/html ./sphinx-out/_static/doxy)
 
 sphinx:
