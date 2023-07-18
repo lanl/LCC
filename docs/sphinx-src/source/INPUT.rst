@@ -1,3 +1,8 @@
+Developing 
+============
+In order to develop within the code, the reader is encouraged to 
+check the `Modules details <_static/doxy/namespaces.html>`_. 
+
 Input file choices
 ==================
 
