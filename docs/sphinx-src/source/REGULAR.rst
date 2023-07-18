@@ -3,7 +3,6 @@
 Building regular shapes
 =======================
 
-`Congruence transformation <_static/doxy/index.html>`_
 One can also build regular shapes, such
 as for example a "spheroid." The parameters 
 to do this can be entered as follows:::
