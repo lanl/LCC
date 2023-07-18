@@ -10,7 +10,7 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-    graphviz: 
+    graphviz: "2.42.2" 
 
   commands:
     - cd docs; make doxy 
