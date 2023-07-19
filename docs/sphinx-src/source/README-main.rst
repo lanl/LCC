@@ -26,7 +26,7 @@ Los Alamos Crystal Cut (LCC) is simple crystal builder. It is an easy-to-use
 and easy-to-develop code to make crystal solid/shape and slabs from a crystal lattice. 
 Provided you have a :code:`.pdb` file containing your lattice basis you can
 create a solid or slab from command line. The core developer of this code is Christian Negre 
-(cnegre@lanl.gov).
+(cnegre@lanl.gov). This documentation has been approved for unlimited release with **LA-UR-23-28084**.
 
 
 License
