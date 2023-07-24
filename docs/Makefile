@@ -20,6 +20,8 @@ doxy:
 sphinx:
 	(cp ../README.rst ./sphinx-src/source/README-main.rst)
 	(cp ./README-doc.rst ./sphinx-src/source/README-doc.rst)
+	(cp ../tools/kmc/README.rst ./sphinx-src/source/README-kmc.rst)
+	(cp ../tools/encap_orthvec/README.rst ./sphinx-src/source/README-orth.rst)
 	(cd sphinx-src/source; sphinx-build -b html . ../../sphinx-out)
 	(cd sphinx-src/source; sphinx-build -b latex . ../../sphinx-out)
 	(cd ./sphinx-out ; make ; cp lcc.pdf ../lcc_user.pdf)

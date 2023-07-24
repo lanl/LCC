@@ -18,6 +18,8 @@ Welcome to lcc's documentation!
    ./SLAB.rst
    ./REGULAR.rst
    ./COMPUTE.rst
+   ./TOOLS.rst
+
 
    
 
