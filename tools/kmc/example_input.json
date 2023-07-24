@@ -1,0 +1,12 @@
+{
+    "box_dimensions": [20, 20, 40],
+    "num_steps": 100000,
+    "dump_every": 500,
+    "dump_file_name": "petn_growth.dump",
+    "initial_radius": 40.0,
+    "temperature": 300.0,
+    "first_cutoff": 7.0,
+    "second_cutoff": 7.5,
+    "first_energy": -0.291,
+    "second_energy": -0.186
+}
