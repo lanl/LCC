@@ -49,8 +49,19 @@ Documenting
 ------------
 
 In order to add a documentation using Sphinx follow these steps: 
-  1) make a file with a proper name under :code:`./sphinx-src/source/`. For example: :code:`MYPAGE.md`. 
+  1) Make a file with a proper name under :code:`./sphinx-src/source/`. For example: :code:`MYPAGE.rst`. 
   2) Add the documentation inside the file using "markdown" syntax. 
   3) Modify the file in :code:`./sphinx-src/source/index.txt` to include the documentation.
 
 After modyfing this file, recompile Sphinx by typing :code:`make sphinx`.
+
+If you have a separate folder with a ``README.rst`` file for an auxiliary code you can always change the ``Makefile`` file inside
+``/docs/`` folder to have your readme file copied in ``./sphinx-src/source/`` . This will avoid having to mantain two 
+copies of the same file. 
+
+About .rst files 
+-----------------
+
+You can find useful information about .rst format `[here] <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_
+
+
