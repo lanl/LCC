@@ -235,6 +235,8 @@ Christian Negre, email: cnegre@lanl.gov
 
 Andrew Alvarado, email: aalvarado@lanl.gov
 
+Jacob Jeffries, email: jwjeffr@g.clemson.edu
+
 .. [1] In order to have access to the repository you should have a github
     account and make sure to add your public ssh key is added in the
     configuration windows of github account.
