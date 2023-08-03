@@ -1,3 +1,6 @@
+.. role:: raw-math(raw)
+    :format: latex html
+
 Kinetic Monte Carlo Crystal Growth Tool
 ----------------------------------------
 
@@ -9,27 +12,29 @@ Monte Carlo simulation of crystal growth from solution, starting with a spherica
 seed. The core developer of this tool is Jacob Jeffries (jwjeffr@clemson.edu
 or jwjeffr@lanl.gov).
 
-Two crystal styles are currently supported, which are PETNMolecular and PETNBlock.
+Lattice Styles
+##############
+
+Two lattice styles are currently supported, which are PETNMolecular and PETNBlock.
 
 The PETNMolecular lattice style initializes sites at the positions:
 
-.. math::
+:raw-math:`$$\mathbf{r}_{ijk\ell} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c} + \ell\mathbf\Delta{r}$$`
 
-    \\mathbf{r}_{ijk\\ell} = i\\mathbf{a} + j\\mathbf{b} + k\\mathbf{c} + \\ell\\mathbf\\Delta{r}
-
-where :math:`i`, :math:`j`, and :math:`k` are any integers, and :math:`\ell` is restricted to :math:`0` and :math:`1`. This
-style is for lattices whose unit cells contain two atoms or molecules and whose basis
-vectors are orthogonal, where :math:`\mathbf{r}_{ijk0}` is the position of one atom in the unit cell, 
-and :math:`\mathbf{r}_{ijk1}` is the position of the other.
+where :raw-math:`$i$`, :raw-math:`$j$`, and :raw-math:`$k$` are any integers, and :raw-math:`$\ell$` is restricted to :raw-math:`$0$` and :raw-math:`$1$`. This style is for lattices whose unit cells contain two atoms or molecules and whose basis
+vectors are orthogonal, where :raw-math:`$\mathbf{r}_{ijk0}$` is the position of one atom in the unit cell, 
+and :raw-math:`$\mathbf{r}_{ijk1}$` is the position of the other. See :code:`example_molecular.json` to see this lattice style
+used in an input file.
 
 The PETNBlock lattice style initializes sites at the positions:
 
-.. math::
+:raw-math:`$$\mathbf{r}_{ijk} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}$$`
 
-    \\mathbf{r}_{ijk} = i\\mathbf{a} + j\\mathbf{b} + k\\mathbf{c}
+where :raw-math:`$i$`, :raw-math:`$j$`, and :raw-math:`$k$` are any integers. This style is for lattices whose unit cells
+contain one atom or molecule and whose basis vectors are orthogonal. See :code:`example_block.json` or :code:`example_block_reconstruction.json` to see this lattice style used in an input file.
 
-where :math:`i`, :math:`j`, and :math:`k` are any integers. This style is for lattices whose unit cells
-contain one atom or molecule and whose basis vectors are orthogonal.
+Energetics styles
+#################
 
 Two energetics styles are currently supported, which are IsotropicSecondNearest and
 AnisotropicThirdNearest.
@@ -38,14 +43,24 @@ The IsotropicSecondNearest energetics style stores interaction energies between 
 and second nearest neighbors, specified by the first nearest cutoff and second nearest
 cutoff. In the input file, the cutoffs are specified as :code:`first_cutoff` and 
 :code:`second_cutoff`, and the respective interaction energies are specified as :code:`first_energy`
-and :code:`second_energy`.
+and :code:`second_energy`. See :code:`example_molecular.json` to see this energetics style used
+in an input file.
 
 The AnisotropicThirdNearest energetics style stores interaction energies between first,
 second, and third nearest neighbors. First nearest neighbor interactions depend on direction.
 In the input file, the first nearest neighbor interactions in the :code:`a`, :code:`b`, and
 :code:`c` directions are respectively specified by :code:`e_1a`, :code:`e_1b`, and :code:`e_1c`.
-Second and third nearest neighbor interactions are assumed to be isotropic, with corresponding
-interaction energies :code:`second_nearest` and :code:`third_nearest`.
+The second nearest neighbor interactions in the :code:`b + c`, :code:`b - c`, :code:`c + a`,
+:code:`-c + a`, :code:`a + b`, and :code:`a - b` directions are respectively specified by 
+:code:`e_2a`, :code:`e_2a_p`, :code:`e_2b`, :code:`e_2b_p`, :code:`e_2c`, and :code:`e_2c_p`.
+The third nearest neighbor interactions in the :code:`a + b + c`, :code:`a - b - c`, :code:`a - b + c`,
+and :code:`a + b - c` directions are respectively specified by :code:`e_31`, :code:`e_32`, :code:`e_33`,
+and :code:`e_34`. See :code:`example_block.json` to see this energetics style used in an input file.
+
+The AnisotropicThirdNearestReconstruction energetics style is identical to the AnisotropicThirdNearest
+energetics style, except all second-nearest and third-nearest interactions are the same, respectively
+specified by :code:`second_nearest` and :code:`third_nearest`. See :code:`example_block_reconstruction.json`
+to see this energetics style used in an input file.
 
 Requirements
 ##############
@@ -76,23 +91,40 @@ Two runs will be performed:
 -   A longer run with parameters provided in :code:`example_molecular.json`. The parameters
     are:
 
-    Box dimensions = (30, 30, 70) (in lattice units, so $0 \leq i, j < 30$ and $0 \leq k < 70$)
+    Box dimensions = (30, 30, 70) (in lattice units, so :raw-math:`$0 \leq i, j < 30$` and :raw-math:`$0 \leq k < 70$`)
+
     Number of steps = 200,000
+
     Dump every = 500 steps
+
     Dump file name = petn_growth_molecular.dump
+
     Initial seed radius = 75.0 angstroms
+
     Temperature = 300.0 kelvin
+
     a = 9.088 angstroms
+
     b = 9.088 angstroms
+
     c = 6.737 angstroms
+
     Energetics type = IsotropicSecondNearest
+
     First-neighbor cutoff distance = 7.0 angstroms
+
     Second-neighbor cutoff distance = 7.5 angstroms
+
     First-neighbor interaction energy = -0.291 electron volts
+
     Second-neighbor interaction energy = -0.186 electron volts
+
     Adsorption prefactor = 1e+10 hertz
+
     Adsorption barrier = 0.9 electron volts
+
     Evaporation prefactor = 1e+10 hertz
+
     Number of cpus to use = all
 
 For new parameters, simply change the dictionary written in :code:`example_molecular.json` to
