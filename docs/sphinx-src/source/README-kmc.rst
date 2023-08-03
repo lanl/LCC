@@ -161,20 +161,27 @@ LAMMPS-style dump files will allow you to visualize the output from this tool.
 To visualize your data with a surface mesh, open OVITO and load in the output dump file:
 
 .. image:: ./_static/figures/ovito_first_pic.png
+    :width: 600
 
 Then, add the "Construct surface mesh" modification:
 
-.. image:: ./_static/figures/ovito_second_pic.png 
+|pic1| |pic2|
 
-.. image:: ./_static/figures/ovito_third_pic.png
+.. |pic1| image:: ./_static/figures/ovito_second_pic.png
+   :height: 300
+
+.. |pic2| image:: ./_static/figures/ovito_third_pic.png
+   :height: 300
 
 After adding this modification, your OVITO window should look like:
 
 .. image:: ./_static/figures/ovito_fourth_pic.png
+    :width: 600
 
 To remove the particles in the visualization window, simply untick the "Particles" option in the top right:
 
 .. image:: ./_static/figures/ovito_fifth_pic.png
+    :width: 600
 
 If your surface mesh looks undesirable, try modifying the parameters of the modification.
 You can do this by clicking on the surface mesh modification, and modifying the available parameters in the bottom right.
@@ -183,9 +190,11 @@ In this menu, you can also change the color of the mesh. If your intent is to us
 
 Once your surface has a desirable shape and color, you can press the play icon to view the time evolution of the surface:
 
-.. image:: ./_static_figures/ovito_sixth_pic.png
+.. image:: ./_static/figures/ovito_sixth_pic.png
+    :width: 600
 
-
+.. image:: ./_static/figures/growth.gif
+    :width: 600
 
 For information on how to render figures and/or movies, visit the OVITO documentation on `rendering`_.
 
