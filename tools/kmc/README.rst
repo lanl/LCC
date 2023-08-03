@@ -37,7 +37,7 @@ AnisotropicThirdNearest.
 The IsotropicSecondNearest energetics style stores interaction energies between first
 and second nearest neighbors, specified by the first nearest cutoff and second nearest
 cutoff. In the input file, the cutoffs are specified as :code:`first_cutoff` and 
-:code:`second_cutoff`, and the respective interaction energies are specified as :code:`first_energy'
+:code:`second_cutoff`, and the respective interaction energies are specified as :code:`first_energy`
 and :code:`second_energy`.
 
 The AnisotropicThirdNearest energetics style stores interaction energies between first,
