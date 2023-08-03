@@ -1,6 +1,10 @@
 .. role:: raw-math(raw)
     :format: latex html
 
+.. _OVITO: https://www.ovito.org/
+
+.. _rendering: https://ovito.org/manual/usage/rendering.html
+
 Kinetic Monte Carlo Crystal Growth Tool
 ----------------------------------------
 
@@ -146,3 +150,42 @@ Notes
 This code is highly parallelized, and will use all available cores unless otherwise
 specified in the input file. If cores are currently being used, your system might crash.
 Specify a smaller number of cores with the :code:`num_cpus` input if necessary.
+
+Visualizing Results
+###################
+
+This tool outputs data with the LAMMPS-style dump format. As such, any program that can visualize
+LAMMPS-style dump files will allow you to visualize the output from this tool.
+
+`OVITO`_ works particularly well with this tool since it has an internal tool for creating a surface mesh.
+To visualize your data with a surface mesh, open OVITO and load in the output dump file:
+
+.. image:: ./_static/figures/ovito_first_pic.png
+
+Then, add the "Construct surface mesh" modification:
+
+.. image:: ./_static/figures/ovito_second_pic.png 
+
+.. image:: ./_static/figures/ovito_third_pic.png
+
+After adding this modification, your OVITO window should look like:
+
+.. image:: ./_static/figures/ovito_fourth_pic.png
+
+To remove the particles in the visualization window, simply untick the "Particles" option in the top right:
+
+.. image:: ./_static/figures/ovito_fifth_pic.png
+
+If your surface mesh looks undesirable, try modifying the parameters of the modification.
+You can do this by clicking on the surface mesh modification, and modifying the available parameters in the bottom right.
+
+In this menu, you can also change the color of the mesh. If your intent is to use these images in a figure, be sure the color contrasts well with a white background.
+
+Once your surface has a desirable shape and color, you can press the play icon to view the time evolution of the surface:
+
+.. image:: ./_static_figures/ovito_sixth_pic.png
+
+
+
+For information on how to render figures and/or movies, visit the OVITO documentation on `rendering`_.
+
