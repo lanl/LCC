@@ -14,10 +14,11 @@ import logging
 import numba
 import multiprocessing as mp
 from bisect import bisect_left
-from sys import argv
-from json import load
-from copy import deepcopy
+import sys
+import json
+import copy
 from functools import partial
+import time
 
 import lattices
 import energetics
@@ -27,7 +28,7 @@ from miscellaneous import Timer, norm
 __boltzmann_constant__ = 8.617e-5
 
 
-@numba.njit()
+@numba.njit(cache=True)
 def get_neighbors(position: np.ndarray, positions: np.ndarray, box_bounds: tuple, cutoff: float) -> list:
     """
     get_neighbors() returns a list of identifiers which neighbor a specific position
@@ -49,13 +50,12 @@ def get_neighbors(position: np.ndarray, positions: np.ndarray, box_bounds: tuple
             ids.append(j + 1)
 
     return ids
+    
 
-
-@Timer(callback=logging.info)
-def get_all_neighbors(positions: np.ndarray, box_bounds: np.ndarray, max_cutoff: float,
+def _get_all_neighbors(positions: np.ndarray, box_bounds: np.ndarray, max_cutoff: float,
                       num_cpus: int) -> numba.typed.Dict:
     """
-    get_all_neighbors returns a dictionary with information about neighbors
+    _get_all_neighbors returns a dictionary with information about neighbors
     each key is a site identifier, each value is a list of identifiers that neighbor the key
     """
 
@@ -76,17 +76,10 @@ def get_all_neighbors(positions: np.ndarray, box_bounds: np.ndarray, max_cutoff:
     
         new_num_cores = num_cpus - 1
         
-        logging.info(f'WARNING: memory error encountered in get_all_neighbors(). '
-                     f'returning number of CPUs in this calculation to {new_num_cores:.0f}')
-
-        neighbors_kwargs = {
-            'positions': positions,
-            'box_bounds': box_bounds,
-            'max_cutoff': max_cutoff,
-            'num_cpus': new_num_cores
-        }
+        logging.info(f'WARNING: memory error encountered in _get_all_neighbors(). '
+                     f'changing number of CPUs in this calculation to {new_num_cores:.0f}')
     
-        return get_all_neighbors(**neighbors_kwargs)
+        return _get_all_neighbors(positions, box_bounds, max_cutoff, new_num_cores)
 
     # initialize numba dict, needs to be a numba dict so numba can compile it in other functions
 
@@ -99,25 +92,28 @@ def get_all_neighbors(positions: np.ndarray, box_bounds: np.ndarray, max_cutoff:
     return neighbor_ids
 
 
-@numba.njit(parallel=True)
+@Timer(callback=logging.info)
+def get_all_neighbors(*args, **kwargs) -> numba.typed.Dict:
+    """
+    get_all_neighbors is a wrapper for _get_all_neighbors
+    makes it so neighbor calculation isn't wrapped by Timer() multiple times
+    """
+
+    return _get_all_neighbors(*args, **kwargs)
+
+
+@numba.njit(parallel=True, cache=True)
 def calculate_total_energy(data: np.ndarray, row: np.ndarray, col: np.ndarray, types: np.ndarray) -> float:
     """
     calculate_total_energy() calculates the total energy from the non-zero keys of the hamiltonian
     """
 
     assert data.shape == row.shape == col.shape
-
-    # typical parallelized summation
-
-    array_to_sum = np.zeros(data.shape[0])
-
-    for i in numba.prange(len(data)):
-        array_to_sum[i] = data[i] * types[row[i]] * types[col[i]]
-
-    return np.sum(array_to_sum)
+    
+    return np.sum(data * types[row] * types[col])
 
 
-@numba.njit(parallel=True)
+@numba.njit(parallel=True, cache=True)
 def get_surface_sites(ids: np.ndarray, types: np.ndarray, neighbor_ids: dict) -> tuple:
     """
     get_surface_sites() calculates the identifiers of sites at the interface
@@ -161,7 +157,7 @@ def get_surface_sites(ids: np.ndarray, types: np.ndarray, neighbor_ids: dict) ->
     return np.array(solvent_ids[1:], dtype=np.int_), np.array(solid_ids[1:], dtype=np.int_)
 
 
-@numba.njit(parallel=True)
+@numba.njit(parallel=True, cache=True)
 def compute_evaporation_rates(
         types: np.ndarray,
         solid_sites: np.ndarray,
@@ -196,7 +192,7 @@ def compute_evaporation_rates(
     return rates
 
 
-@numba.njit(parallel=True)
+@numba.njit(parallel=True, cache=True)
 def compute_adsorption_rates(
         types: np.ndarray,
         solvent_sites: np.ndarray,
@@ -209,7 +205,9 @@ def compute_adsorption_rates(
     compute_adsorption_rates() calculates all adsorption rates
     """
 
-    # initialize rates array and some prefactor
+    # uncomment below if we care about site-dependent adsorption
+    
+    """
 
     rates = np.zeros(solvent_sites.shape[0])
 
@@ -220,6 +218,9 @@ def compute_adsorption_rates(
         rates[i] = prefactor * np.exp(-beta * barrier)
 
     return rates
+    """
+    
+    return np.ones(solvent_sites.shape[0]) * prefactor * np.exp(-beta * barrier)
 
 
 def dump_info(
@@ -259,8 +260,17 @@ def dump_info(
     logging.info(f'info at step {step:.0f} and time {t:.2E} dumped')
     
     
-__available_lattice_types__ = ['petn_molecular', 'petn_block']
-__available_energetics_types__ = ['isotropic_second_nearest', 'anisotropic_third_nearest']
+# add new list elements here if you create a custom lattice or energetics type    
+
+__available_lattice_types__ = [
+    'petn_molecular',
+    'petn_block'
+]
+__available_energetics_types__ = [
+    'isotropic_second_nearest',
+    'anisotropic_third_nearest',
+    'anisotropic_third_nearest_reconstruction'
+]
 
 
 @Timer(callback=logging.info)
@@ -278,6 +288,7 @@ def perform_sim(
         adsorption_barrier: float,
         num_cpus='all',
         log_file_name='kmc.log',
+        calculate_surface_every: int = 1,
         **kwargs
 ) -> None:
     """
@@ -343,8 +354,35 @@ def perform_sim(
         max_cutoff = kwargs['second_cutoff']
         
         energetics_ = energetics.IsotropicSecondNearest(**energetics_kwargs)
-        
+
     elif energetics_type.lower() == 'anisotropic_third_nearest':
+
+        energetics_kwargs = {
+            'e_1a': kwargs['e_1a'],
+            'e_1b': kwargs['e_1b'],
+            'e_1c': kwargs['e_1c'],
+            'e_2a': kwargs['e_2a'],
+            'e_2a_p': kwargs['e_2a_p'],
+            'e_2b': kwargs['e_2b'],
+            'e_2b_p': kwargs['e_2b_p'],
+            'e_2c': kwargs['e_2c'],
+            'e_2c_p': kwargs['e_2c_p'],
+            'e_31': kwargs['e_31'],
+            'e_32': kwargs['e_32'],
+            'e_33': kwargs['e_33'],
+            'e_34': kwargs['e_34'],
+            'a': kwargs['a'] * np.array([1, 0, 0]),
+            'b': kwargs['b'] * np.array([0, 1, 0]),
+            'c': kwargs['c'] * np.array([0, 0, 1])
+        }
+
+        relative_tolerance = 0.1
+
+        max_cutoff = (1.0 + relative_tolerance) * np.sqrt(kwargs['a'] ** 2 + kwargs['b'] ** 2 + kwargs['c'] ** 2)
+
+        energetics_ = energetics.AnisotropicThirdNearest(**energetics_kwargs)
+        
+    elif energetics_type.lower() == 'anisotropic_third_nearest_reconstruction':
     
         energetics_kwargs = {
             'e_1a': kwargs['e_1a'],
@@ -357,9 +395,11 @@ def perform_sim(
             'c': kwargs['c'] * np.array([0, 0, 1])
         }
         
-        max_cutoff = np.sqrt(kwargs['a'] ** 2 + kwargs['b'] ** 2 + kwargs['c'] ** 2)
+        relative_tolerance = 0.1
         
-        energetics_ = energetics.AnisotropicThirdNearest(**energetics_kwargs)
+        max_cutoff = (1.0 + relative_tolerance) * np.sqrt(kwargs['a'] ** 2 + kwargs['b'] ** 2 + kwargs['c'] ** 2)
+        
+        energetics_ = energetics.AnisotropicThirdNearestReconstruction(**energetics_kwargs)
 
     else:
 
@@ -404,8 +444,13 @@ def perform_sim(
             # recalculate energy, active sites, and possible rates
 
             initial_energy = calculate_total_energy(*h_data, types)
-            solvent_sites, solid_sites = get_surface_sites(ids, types, neighbor_ids)
-            evaporation_args = (
+            
+            if step % calculate_surface_every == 0:
+            
+                solvent_sites, solid_sites = get_surface_sites(ids, types, neighbor_ids)
+            
+            past = time.time()
+            evaporation_rates = compute_evaporation_rates(
                 types,
                 solid_sites,
                 initial_energy,
@@ -413,8 +458,7 @@ def perform_sim(
                 h_data,
                 evaporation_prefactor
             )
-            evaporation_rates = compute_evaporation_rates(*evaporation_args)
-            adsorption_args = (
+            adsorption_rates = compute_adsorption_rates(
                 types,
                 solvent_sites,
                 initial_energy,
@@ -422,15 +466,12 @@ def perform_sim(
                 adsorption_prefactor,
                 adsorption_barrier
             )
-            adsorption_rates = compute_adsorption_rates(*adsorption_args)
+            rate_calc_time = time.time() - past
 
             # put rates and sites into one array
 
             rates = np.concatenate((evaporation_rates, adsorption_rates))
             surface_sites = np.concatenate((solid_sites, solvent_sites))
-            if step % dump_every == 0:
-                logging.info(f'min rate = {min(rates):.2E}')
-                logging.info(f'max rate = {max(rates):.2E}')
 
             # sort rates in ascending order, sort sites according to how rates were sorted
 
@@ -438,6 +479,18 @@ def perform_sim(
             sorted_rates, sorted_sites = rates[sorted_indices], surface_sites[sorted_indices]
             cumulative_function = np.cumsum(sorted_rates)
             total_rate = cumulative_function[-1]
+            
+            if step % dump_every == 0:
+            
+                min_, q1, median, q3, max_ = np.percentile(sorted_rates, q=[0, 25, 50, 75, 100])
+            
+                logging.info(f'\tRATE STATISTICS BELOW, N = {len(sorted_rates):.0f}')
+                logging.info(f'\t\tmin rate = {min_:.2E}')
+                logging.info(f'\t\t25th percentile = {q1:.2E}')
+                logging.info(f'\t\t50th percentile = {median:.2E}')
+                logging.info(f'\t\t75th percentile = {q3:.2E}')
+                logging.info(f'\t\tmax rate = {max_:.2E}')
+                logging.info(f'\trate calculation took {rate_calc_time} sec')
 
             # pick an event according to KMC algorithm
             # bisect_right performs binary search
@@ -471,21 +524,21 @@ def main():
     # parse input file
     
     try:
-        json_file_name = argv[1]
+        json_file_name = sys.argv[1]
     except IndexError:
-        raise ValueError('needs an input file - see example_input.json')
+        raise ValueError('needs an input file - see example_molecular.json')
     
     with open(json_file_name, 'r') as input_file:
-        real_simulation_parameters = load(input_file)
+        real_simulation_parameters = json.load(input_file)
     
     # define dummy simulation parameters
     # same simulation with a smaller geometry and different dump information
     
-    dummy_simulation_parameters = deepcopy(real_simulation_parameters)
+    dummy_simulation_parameters = copy.deepcopy(real_simulation_parameters)
     dummy_simulation_parameters['box_dimensions'] = [10, 10, 10]
     dummy_simulation_parameters['num_steps'] = 10
     dummy_simulation_parameters['dump_every'] = 1
-    dummy_simulation_parameters['dump_file_name'] = 'small.dump'
+    dummy_simulation_parameters['dump_file_name'] = f"{real_simulation_parameters['dump_file_name']}.small"
     dummy_simulation_parameters['initial_radius'] = 8.0
     
     # a light simulation is called first, compiling all the expensive function calls

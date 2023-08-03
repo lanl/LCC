@@ -1,6 +1,6 @@
 {
     "box_dimensions": [30, 30, 70],
-    "num_steps": 200000,
+    "num_steps": 100000,
     "dump_every": 1000,
     "dump_file_name": "petn_growth_molecular.dump",
     "initial_radius": 75.0,
