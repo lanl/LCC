@@ -93,7 +93,7 @@ Two runs will be performed:
 
     Box dimensions = (30, 30, 70) (in lattice units, so :raw-math:`$0 \leq i, j < 30$` and :raw-math:`$0 \leq k < 70$`)
 
-    Number of steps = 200,000
+    Number of steps = 100,000
 
     Dump every = 500 steps
 
