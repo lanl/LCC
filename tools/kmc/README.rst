@@ -15,7 +15,7 @@ The PETNMolecular lattice style initializes sites at the positions:
 
 .. math::
 
-    \mathbf{r}_{ijk\ell} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c} + \ell\mathbf\Delta{r}
+    \\mathbf{r}_{ijk\\ell} = i\\mathbf{a} + j\\mathbf{b} + k\\mathbf{c} + \\ell\\mathbf\\Delta{r}
 
 where :math:`i`, :math:`j`, and :math:`k` are any integers, and :math:`\ell` is restricted to :math:`0` and :math:`1`. This
 style is for lattices whose unit cells contain two atoms or molecules and whose basis
@@ -26,7 +26,7 @@ The PETNBlock lattice style initializes sites at the positions:
 
 .. math::
 
-    \mathbf{r}_{ijk} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}
+    \\mathbf{r}_{ijk} = i\\mathbf{a} + j\\mathbf{b} + k\\mathbf{c}
 
 where :math:`i`, :math:`j`, and :math:`k` are any integers. This style is for lattices whose unit cells
 contain one atom or molecule and whose basis vectors are orthogonal.
