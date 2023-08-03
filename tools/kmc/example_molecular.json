@@ -1,0 +1,23 @@
+{
+    "box_dimensions": [30, 30, 70],
+    "num_steps": 100000,
+    "dump_every": 1000,
+    "dump_file_name": "petn_growth_molecular.dump",
+    "initial_radius": 75.0,
+    "temperature": 300.0,
+    "lattice_type": "petn_molecular",
+    "a": 9.088,
+    "b": 9.088,
+    "c": 6.737,
+    "offset": [4.54348, 4.54346, 3.36908],
+    "energetics_type": "isotropic_second_nearest",
+    "first_cutoff": 7.0,
+    "second_cutoff": 7.5,
+    "first_energy": -0.291,
+    "second_energy": -0.186,
+    "adsorption_prefactor": 1e+10,
+    "adsorption_barrier": 0.9,
+    "evaporation_prefactor": 1e+10,
+    "num_cpus": "all",
+    "log_file_name": "molecular.log"
+}
