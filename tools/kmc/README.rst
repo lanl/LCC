@@ -13,18 +13,22 @@ Two crystal styles are currently supported, which are PETNMolecular and PETNBloc
 
 The PETNMolecular lattice style initializes sites at the positions:
 
-$\mathbf{r}_{ijk\ell} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c} + \ell\mathbf{\Delta r}$
+.. math::
 
-where $i$, $j$, and $k$ are any integers, and $\ell$ is restricted to $0$ and $1$. This
+    \mathbf{r}_{ijk\ell} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c} + \ell\mathbf\Delta{r}
+
+where :math:`i`, :math:`j`, and :math:`k` are any integers, and :math:`\ell` is restricted to :math:`0` and :math:`1`. This
 style is for lattices whose unit cells contain two atoms or molecules and whose basis
-vectors are orthogonal, where $\mathbf{r}_{ijk0}$ is the position of one atom in the unit cell, 
-and $\mathbf{r}_{ijk1}$ is the position of the other.
+vectors are orthogonal, where :math:`\mathbf{r}_{ijk0}` is the position of one atom in the unit cell, 
+and :math:`\mathbf{r}_{ijk1}` is the position of the other.
 
 The PETNBlock lattice style initializes sites at the positions:
 
-$\mathbf{r}_{ijk} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}$
+.. math::
 
-where $i$, $j$, and $k$ are any integers. This style is for lattices whose unit cells
+    \mathbf{r}_{ijk} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}
+
+where :math:`i`, :math:`j`, and :math:`k` are any integers. This style is for lattices whose unit cells
 contain one atom or molecule and whose basis vectors are orthogonal.
 
 Two energetics styles are currently supported, which are IsotropicSecondNearest and
