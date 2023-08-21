@@ -1,14 +1,16 @@
 .. role:: raw-math(raw)
     :format: latex html
 
+.. _Kinetic Monte Carlo: https://en.wikipedia.org/wiki/Kinetic_Monte_Carlo
+
 Kinetic Monte Carlo Crystal Growth Tool
 ----------------------------------------
 
 About
 ######
 
-This folder contains a Python script ``growth_kmc.py`` which performs a Kinetic
-Monte Carlo simulation of crystal growth from solution, starting with a spherical
+This folder contains a Python script ``growth_kmc.py`` which performs a `Kinetic
+Monte Carlo`_ simulation of crystal growth from solution, starting with a spherical
 seed. The core developer of this tool is Jacob Jeffries (jwjeffr@clemson.edu
 or jwjeffr@lanl.gov).
 

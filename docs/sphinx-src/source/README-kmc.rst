@@ -1,14 +1,20 @@
 .. role:: raw-math(raw)
     :format: latex html
 
+.. _OVITO: https://www.ovito.org/
+
+.. _rendering: https://ovito.org/manual/usage/rendering.html
+
+.. _Kinetic Monte Carlo: https://en.wikipedia.org/wiki/Kinetic_Monte_Carlo
+
 Kinetic Monte Carlo Crystal Growth Tool
 ----------------------------------------
 
 About
 ######
 
-This folder contains a Python script ``growth_kmc.py`` which performs a Kinetic
-Monte Carlo simulation of crystal growth from solution, starting with a spherical
+This folder contains a Python script ``growth_kmc.py`` which performs a `Kinetic
+Monte Carlo`_ simulation of crystal growth from solution, starting with a spherical
 seed. The core developer of this tool is Jacob Jeffries (jwjeffr@clemson.edu
 or jwjeffr@lanl.gov).
 
@@ -146,3 +152,51 @@ Notes
 This code is highly parallelized, and will use all available cores unless otherwise
 specified in the input file. If cores are currently being used, your system might crash.
 Specify a smaller number of cores with the :code:`num_cpus` input if necessary.
+
+Visualizing Results
+###################
+
+This tool outputs data with the LAMMPS-style dump format. As such, any program that can visualize
+LAMMPS-style dump files will allow you to visualize the output from this tool.
+
+`OVITO`_ works particularly well with this tool since it has an internal tool for creating a surface mesh.
+To visualize your data with a surface mesh, open OVITO and load in the output dump file:
+
+.. image:: ./_static/figures/ovito_first_pic.png
+    :width: 600
+
+Then, add the "Construct surface mesh" modification:
+
+|pic1| |pic2|
+
+.. |pic1| image:: ./_static/figures/ovito_second_pic.png
+   :height: 300
+
+.. |pic2| image:: ./_static/figures/ovito_third_pic.png
+   :height: 300
+
+After adding this modification, your OVITO window should look like:
+
+.. image:: ./_static/figures/ovito_fourth_pic.png
+    :width: 600
+
+To remove the particles in the visualization window, simply untick the "Particles" option in the top right:
+
+.. image:: ./_static/figures/ovito_fifth_pic.png
+    :width: 600
+
+If your surface mesh looks undesirable, try modifying the parameters of the modification.
+You can do this by clicking on the surface mesh modification, and modifying the available parameters in the bottom right.
+
+In this menu, you can also change the color of the mesh. If your intent is to use these images in a figure, be sure the color contrasts well with a white background.
+
+Once your surface has a desirable shape and color, you can press the play icon to view the time evolution of the surface:
+
+.. image:: ./_static/figures/ovito_sixth_pic.png
+    :width: 600
+
+.. image:: ./_static/figures/growth.gif
+    :width: 600
+
+For information on how to render figures and/or movies, visit the OVITO documentation on `rendering`_.
+
