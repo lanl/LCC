@@ -19,10 +19,12 @@ import json
 import copy
 from functools import partial
 import time
+import pickle
 
 import lattices
 import energetics
-from miscellaneous import Timer, norm
+import configurations
+from miscellaneous import Timer, norm, dump_info
 
 
 __boltzmann_constant__ = 8.617e-5
@@ -76,7 +78,7 @@ def _get_all_neighbors(positions: np.ndarray, box_bounds: np.ndarray, max_cutoff
     
         new_num_cores = num_cpus - 1
         
-        logging.info(f'WARNING: memory error encountered in _get_all_neighbors(). '
+        logging.info(f'WARNING: OSError encountered in _get_all_neighbors(). likely a memory error. '
                      f'changing number of CPUs in this calculation to {new_num_cores:.0f}')
     
         return _get_all_neighbors(positions, box_bounds, max_cutoff, new_num_cores)
@@ -100,17 +102,6 @@ def get_all_neighbors(*args, **kwargs) -> numba.typed.Dict:
     """
 
     return _get_all_neighbors(*args, **kwargs)
-
-
-@numba.njit(parallel=True, cache=True)
-def calculate_total_energy(data: np.ndarray, row: np.ndarray, col: np.ndarray, types: np.ndarray) -> float:
-    """
-    calculate_total_energy() calculates the total energy from the non-zero keys of the hamiltonian
-    """
-
-    assert data.shape == row.shape == col.shape
-    
-    return np.sum(data * types[row] * types[col])
 
 
 @numba.njit(parallel=True, cache=True)
@@ -155,40 +146,46 @@ def get_surface_sites(ids: np.ndarray, types: np.ndarray, neighbor_ids: dict) ->
     # need to exclude the 0
 
     return np.array(solvent_ids[1:], dtype=np.int_), np.array(solid_ids[1:], dtype=np.int_)
+    
 
+@numba.njit(cache=True)
+def compute_energy_change(
+        flipped_bit: int,
+        initial_state: np.ndarray,
+        final_state: np.ndarray,
+        diag_term: float,
+        q_vec: np.ndarray
+) -> float:
 
+    self_term = (initial_state[flipped_bit] - final_state[flipped_bit]) * diag_term
+    interaction_term = np.dot(final_state[flipped_bit] * final_state - initial_state[flipped_bit] * initial_state, q_vec)
+
+    return self_term + interaction_term
+    
+    
 @numba.njit(parallel=True, cache=True)
 def compute_evaporation_rates(
         types: np.ndarray,
         solid_sites: np.ndarray,
-        initial_energy: float,
         beta: float,
-        h_data: tuple,
-        prefactor: float
+        prefactor: float,
+        hamiltonian: np.ndarray
 ) -> np.ndarray:
-    """
-    compute_evaporation_rates() calculates all evaporation rates
-    """
-
-    # initialize rates array and some prefactor
 
     rates = np.zeros(solid_sites.shape[0])
-
+    
     for i in numba.prange(solid_sites.shape[0]):
-        # create an array of new types, swap the site of interest to a zero, calculate change in energy
-
+        
         site_id = solid_sites[i]
         new_types = types.copy()
         site_index = site_id - 1
         new_types[site_index] = 0
-        final_energy = calculate_total_energy(*h_data, new_types)
-
-        barrier = final_energy - initial_energy
-
-        # store arrhenius rate
-
+        diag_term = hamiltonian[site_index, site_index]
+        q_vec = hamiltonian[site_index, :] + hamiltonian[:, site_index]
+        barrier = compute_energy_change(site_index, types, new_types, diag_term, q_vec)
+        
         rates[i] = prefactor * np.exp(-beta * barrier)
-
+        
     return rates
 
 
@@ -223,72 +220,25 @@ def compute_adsorption_rates(
     return np.ones(solvent_sites.shape[0]) * prefactor * np.exp(-beta * barrier)
 
 
-def dump_info(
-        step: int,
-        t: float,
-        types: np.ndarray,
-        box_bounds: np.ndarray,
-        ids: np.ndarray,
-        positions: np.ndarray,
-        file
-) -> None:
-    """
-    dump_info() dumps the info at a given step
-    only dumps occupied sites
-    """
-
-    header_lines = [
-        'ITEM: TIMESTEP',
-        f'{step:.0f} {t}',
-        'ITEM: NUMBER OF ATOMS',
-        f'{np.sum(types == 1):.0f}',
-        'ITEM: BOX BOUNDS',
-        f'0 {box_bounds[0]}',
-        f'0 {box_bounds[1]}',
-        f'0 {box_bounds[2]}',
-        'ITEM: ATOMS id type x y z'
-    ]
-    
-    for line in header_lines:
-        print(line, file=file, flush=True)
-
-    for id_, type_, (x, y, z) in zip(ids, types, positions):
-        if type_ == 0:
-            continue
-        print(f'{id_} {type_} {x} {y} {z}', file=file, flush=True)
-
-    logging.info(f'info at step {step:.0f} and time {t:.2E} dumped')
-    
-    
-# add new list elements here if you create a custom lattice or energetics type    
-
-__available_lattice_types__ = [
-    'petn_molecular',
-    'petn_block'
-]
-__available_energetics_types__ = [
-    'isotropic_second_nearest',
-    'anisotropic_third_nearest',
-    'anisotropic_third_nearest_reconstruction'
-]
-
-
 @Timer(callback=logging.info)
 def perform_sim(
         box_dimensions: list,
         dump_every: int,
-        initial_radius: float,
         dump_file_name: str,
         temperature: float,
         num_steps: int,
         lattice_type: str,
         energetics_type: str,
+        init_configuration_type: str,
         evaporation_prefactor: float,
         adsorption_prefactor: float,
         adsorption_barrier: float,
         num_cpus='all',
         log_file_name='kmc.log',
         calculate_surface_every: int = 1,
+        lattice_pickle: str = None,
+        energetics_pickle: str = None,
+        print_hamiltonian: str = None,
         **kwargs
 ) -> None:
     """
@@ -296,8 +246,6 @@ def perform_sim(
     """
     
     logging.basicConfig(filename=log_file_name, filemode='w', format='%(message)s', level=logging.INFO)
-
-    # calculate thermodynamic beta
 
     if num_cpus == 'all':
         num_cpus = mp.cpu_count()
@@ -312,112 +260,36 @@ def perform_sim(
     beta = 1.0 / (__boltzmann_constant__ * temperature)
 
     # initialize types, positions, box bounds, identifiers, and the corresponding hamiltonian
-
-    if lattice_type.lower() == 'petn_molecular':
-
-        lattice_kwargs = {
-            'a': kwargs['a'],
-            'b': kwargs['b'],
-            'c': kwargs['c'],
-            'offset': np.array(kwargs['offset']),
-            'dimensions': np.array(box_dimensions)
-        }
-
-        lattice = lattices.PETNMolecularLattice(**lattice_kwargs)
-        
-    elif lattice_type.lower() == 'petn_block':
     
-        lattice_kwargs = {
-            'a': kwargs['a'],
-            'b': kwargs['b'],
-            'c': kwargs['c'],
-            'dimensions': np.array(box_dimensions)
-        }
-        
-        lattice = lattices.PETNBlockLattice(**lattice_kwargs)
-
-    else:
-
-        raise ValueError(f'valid lattice_type inputs are {__available_lattice_types__}')
-        
-    types, positions, box_bounds, ids = lattice.initialize_simulation()
-
-    if energetics_type.lower() == 'isotropic_second_nearest':
-
-        energetics_kwargs = {
-            'first_cutoff': kwargs['first_cutoff'],
-            'first_energy': kwargs['first_energy'],
-            'second_cutoff': kwargs['second_cutoff'],
-            'second_energy': kwargs['second_energy']
-        }
-
-        max_cutoff = kwargs['second_cutoff']
-        
-        energetics_ = energetics.IsotropicSecondNearest(**energetics_kwargs)
-
-    elif energetics_type.lower() == 'anisotropic_third_nearest':
-
-        energetics_kwargs = {
-            'e_1a': kwargs['e_1a'],
-            'e_1b': kwargs['e_1b'],
-            'e_1c': kwargs['e_1c'],
-            'e_2a': kwargs['e_2a'],
-            'e_2a_p': kwargs['e_2a_p'],
-            'e_2b': kwargs['e_2b'],
-            'e_2b_p': kwargs['e_2b_p'],
-            'e_2c': kwargs['e_2c'],
-            'e_2c_p': kwargs['e_2c_p'],
-            'e_31': kwargs['e_31'],
-            'e_32': kwargs['e_32'],
-            'e_33': kwargs['e_33'],
-            'e_34': kwargs['e_34'],
-            'a': kwargs['a'] * np.array([1, 0, 0]),
-            'b': kwargs['b'] * np.array([0, 1, 0]),
-            'c': kwargs['c'] * np.array([0, 0, 1])
-        }
-
-        relative_tolerance = 0.1
-
-        max_cutoff = (1.0 + relative_tolerance) * np.sqrt(kwargs['a'] ** 2 + kwargs['b'] ** 2 + kwargs['c'] ** 2)
-
-        energetics_ = energetics.AnisotropicThirdNearest(**energetics_kwargs)
-        
-    elif energetics_type.lower() == 'anisotropic_third_nearest_reconstruction':
+    lattice = lattices.get_lattice(lattice_type=lattice_type.lower(), box_dimensions=box_dimensions, **kwargs)
+    lattice_info = lattice.initialize_simulation()
+    if lattice_pickle:
+        with open(lattice_pickle, 'wb') as l_file:
+            pickle.dump(lattice_info, l_file)
+    positions, box_bounds, ids = lattice_info
     
-        energetics_kwargs = {
-            'e_1a': kwargs['e_1a'],
-            'e_1b': kwargs['e_1b'],
-            'e_1c': kwargs['e_1c'],
-            'second_nearest': kwargs['second_nearest'],
-            'third_nearest': kwargs['third_nearest'],
-            'a': kwargs['a'] * np.array([1, 0, 0]),
-            'b': kwargs['b'] * np.array([0, 1, 0]),
-            'c': kwargs['c'] * np.array([0, 0, 1])
-        }
-        
-        relative_tolerance = 0.1
-        
-        max_cutoff = (1.0 + relative_tolerance) * np.sqrt(kwargs['a'] ** 2 + kwargs['b'] ** 2 + kwargs['c'] ** 2)
-        
-        energetics_ = energetics.AnisotropicThirdNearestReconstruction(**energetics_kwargs)
-
-    else:
-
-        raise ValueError(f'valid energetics_type inputs are {__available_energetics_types__}')
-
-    h_data = energetics_.get_hamiltonian(positions, box_bounds)
+    energetics_ = energetics.get_energetics(energetics_type=energetics_type.lower(), **kwargs)
+    max_cutoff, h_data = energetics_.get_hamiltonian(positions, box_bounds)
+    
+    ### get array from h_data
+    hamiltonian = np.zeros((len(ids), len(ids)))
+    
+    for element, i, j in zip(*h_data):
+        hamiltonian[i, j] = element
+    
     logging.info(f'{len(ids):.0f} sites initialized')
-
-    # start with a spherical crystal at the center
-
-    crystal_origin = np.array(box_bounds) / 2
-    for index, position in enumerate(positions):
-        if np.linalg.norm(position - crystal_origin) <= initial_radius:
-            types[index] = 1
+    data, row, col = h_data
+    if energetics_pickle:
+        with open(energetics_pickle, 'wb') as e_file:
+            pickle.dump(h_data, e_file)   
+    
+    configuration = configurations.get_configuration(init_configuration_type=init_configuration_type.lower(), **kwargs)
+    types = configuration.set_types(positions, box_bounds)
     logging.info(f'{np.sum(types == 1):.0f} sites changed to type 1')
 
     # calculate neighbor dictionary
-
+    
+    logging.info(f'neighbor cutoff distance for events = {max_cutoff:.2E}')
     neighbor_ids = get_all_neighbors(positions, box_bounds, max_cutoff, num_cpus=num_cpus)
     logging.info('neighbors calculated')
 
@@ -443,7 +315,7 @@ def perform_sim(
 
             # recalculate energy, active sites, and possible rates
 
-            initial_energy = calculate_total_energy(*h_data, types)
+            initial_energy = energetics.calculate_total_energy(*h_data, types)
             
             if step % calculate_surface_every == 0:
             
@@ -453,10 +325,9 @@ def perform_sim(
             evaporation_rates = compute_evaporation_rates(
                 types,
                 solid_sites,
-                initial_energy,
                 beta,
-                h_data,
-                evaporation_prefactor
+                evaporation_prefactor,
+                hamiltonian
             )
             adsorption_rates = compute_adsorption_rates(
                 types,
@@ -493,14 +364,14 @@ def perform_sim(
                 logging.info(f'\trate calculation took {rate_calc_time} sec')
 
             # pick an event according to KMC algorithm
-            # bisect_right performs binary search
+            # bisect_left performs binary search
             # np.random.uniform() is [0, 1), but KMC calls for (0, 1]
             random_draw = 1.0 - np.random.uniform(low=0, high=1)
             event_index = bisect_left(cumulative_function, random_draw * total_rate)
 
             # update timestep
 
-            second_draw = np.random.uniform(low=0, high=1)
+            second_draw = 1.0 - np.random.uniform(low=0, high=1)
             dt = np.log(1.0 / second_draw) * 1.0 / total_rate
             t += dt
 
@@ -511,7 +382,7 @@ def perform_sim(
 
         # dump final info
 
-        dump_info(step, t, types, box_bounds, ids, positions, file)
+        dump_info(step + 1, t, types, box_bounds, ids, positions, file)
 
     logging.info('run finished')
 
@@ -539,16 +410,17 @@ def main():
     dummy_simulation_parameters['num_steps'] = 10
     dummy_simulation_parameters['dump_every'] = 1
     dummy_simulation_parameters['dump_file_name'] = f"{real_simulation_parameters['dump_file_name']}.small"
-    dummy_simulation_parameters['initial_radius'] = 8.0
+    dummy_simulation_parameters['init_configuration_type'] = 'spherical'
+    dummy_simulation_parameters['radius'] = 8.0
     
     # a light simulation is called first, compiling all the expensive function calls
-
+    
     perform_sim(**dummy_simulation_parameters)
     logging.info('dummy simulation completed')
 
     # perform expensive simulation next
     
-    perform_sim(**real_simulation_parameters)    
+    perform_sim(**real_simulation_parameters)
     logging.info('real simulation completed')
 
 
