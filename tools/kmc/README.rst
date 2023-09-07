@@ -52,7 +52,7 @@ Requirements
 
 -   The external :code:`python` packages :code:`numpy` and :code:`numba`.
 
-The example input (:code:`example_input.json`) provided works for Python 3.9.12, Numpy 1.21.6, and Numba 0.55.1. Other versions are not guaranteed to be functional.
+The example input (:code:`example_ortho4.json`) provided works for Python 3.9.12, Numpy 1.21.6, and Numba 0.55.1. Other versions are not guaranteed to be functional.
 
 Testing and running the code
 #############################
