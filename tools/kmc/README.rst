@@ -20,7 +20,7 @@ This folder contains a Python script ``growth_kmc.py`` which performs a `Kinetic
 Lattice Styles
 ##############
 
-Two lattice styles are currently supported, which are PETNMolecular and PETNBlock.
+Two lattice styles are currently supported, which are TriclinicFourIndices and TriclinicThreeIndices.
 
 The TriclinicFourIndices lattice style initializes sites at the positions:
 
