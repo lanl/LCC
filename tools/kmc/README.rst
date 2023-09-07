@@ -32,7 +32,7 @@ The OrthogonalFourIndices lattice style is a special case of the TriclinicFourIn
 
 The TriclinicThreeIndices lattice style initializes sites at the positions:
 
-:raw-math:`$$\mathbf{r}_{ijk\ell} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}$$`
+:raw-math:`$$\mathbf{r}_{ijk} = i\mathbf{a} + j\mathbf{b} + k\mathbf{c}$$`
 
 where :raw-math:`$i$`, :raw-math:`$j$`, and :raw-math:`$k$` are any integers. This style is for lattices whose unit cells contain one atom or molecule. The angles :raw-math:`$\alpha$`, :raw-math:`$\beta$`, and :raw-math:`$\gamma$` are also specifiable. See :code:`example_tri3.json` to see this lattice style used in an input file. Angles must be specified in degrees.
 
